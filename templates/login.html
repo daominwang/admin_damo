@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="x-box">
+        <div class="x-top"></div>
+        <div class="x-mid">
+            <div class="x-avtar">
+                <img src="../static/images/logo.png" alt="">
+            </div>
+            <div class="input">
+                <form class="layui-form" method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="layui-form-item x-login-box">
+                        {{ form.username.label(class_="layui-form-label",text='<i class="layui-icon">&#xe612;</i>') }}
+                        <div class="layui-input-inline">
+                            {{ form.username(class_="layui-input", placeholder="用户名",required="",autocomplete="off") }}
+                        </div>
+                    </div>
+                    <div class="layui-form-item x-login-box">
+                        {{ form.password.label(class_="layui-form-label",text='<i class="layui-icon">&#xe628;</i>') }}
+                        <div class="layui-input-inline">
+                            {{ form.password(class_="layui-input", placeholder="******",required="",autocomplete="off") }}
+                        </div>
+                    </div>
+                    <div class="layui-form-item" id="loginbtn">
+                        {{ form.submit(class_="layui-btn") }}
+                        <button class="layui-btn">
+                            登 录
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <p style="color:#fff;text-align: center;">Copyright © 2017.Company name All rights X-admin </p>
+{% endblock %}
