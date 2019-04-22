@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% block body %}
     <div class="x-box">
         <div class="x-top"></div>
         <div class="x-mid">
@@ -8,7 +8,7 @@
                 <img src="../static/images/logo.png" alt="">
             </div>
             <div class="input">
-                <form class="layui-form" method="POST">
+                <form class="layui-form" onsubmit="return false">
                     {{ form.hidden_tag() }}
                     <div class="layui-form-item x-login-box">
                         {{ form.username.label(class_="layui-form-label",text='<i class="layui-icon">&#xe612;</i>') }}
@@ -23,8 +23,8 @@
                         </div>
                     </div>
                     <div class="layui-form-item" id="loginbtn">
-                        {{ form.submit(class_="layui-btn") }}
-                        <button class="layui-btn">
+                        {#                        {{ form.submit(class_="layui-btn") }}#}
+                        <button class="layui-btn" lay-filter="save" lay-submit="">
                             登 录
                         </button>
                     </div>
@@ -33,4 +33,28 @@
         </div>
     </div>
     <p style="color:#fff;text-align: center;">Copyright © 2017.Company name All rights X-admin </p>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        layui.use(['form'],
+            function () {
+                $ = layui.jquery;
+                var form = layui.form(),
+                    layer = layui.layer;
+
+                //监听提交
+                form.on('submit',
+                    function (data) {
+                        $.post('', data.field, function (result) {
+                            if (result.code === 200) {
+                                window.location.href = '{{ url_for('view.index') }}';
+                            } else {
+                                layer.alert(result.msg, {icon: 5, time: 3000})
+                            }
+                        }, 'json');
+                        return false;
+                    });
+            });
+    </script>
 {% endblock %}

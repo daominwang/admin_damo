@@ -1,0 +1,82 @@
+{% extends 'index.html' %}
+
+{% block content_css %}
+    <style>
+        div[lay-id=user_table] {
+            margin: 0 15px;
+        }
+
+        input[name=key_word] {
+            display: inline-block;
+            width: 150px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <table id="user_table" lay-filter="user_table"></table>
+{% endblock %}
+
+{% block content_javascript %}
+    <script type="text/html" id="toolbarDemo">
+        <div class="layui-row">
+            <input class="layui-input" style="height: 30px;" placeholder="关键字" name="key_word">
+            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="search"><i class="layui-icon">&#xe615;</i>搜索</button>
+            <a class="layui-btn layui-btn-sm"><i class="layui-icon"></i>添加</a>
+        </div>
+    </script>
+
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+
+    <script>
+        layui.use('table', function () {
+            var table = layui.table;
+
+            table.render({
+                elem: '#user_table',
+                height: 600,
+                url: '{{ url_for('view.user_manage', user_type=user_type) }}',
+                method: 'post',
+                response: {
+                    statusCode: 200
+                },
+                parseData: function (res) {
+                    res.data.forEach(function (v, i, a) {
+                        v.is_alive = v.is_alive ? '正常' : '已删'
+                    });
+                },
+                page: true,
+                toolbar: '#toolbarDemo',
+                defaultToolbar: ['filter'],
+                cols: [
+                    [
+                        {field: 'id', title: 'ID', sort: true, fixed: 'left'},
+                        {field: 'username', title: '用户名'},
+                        {field: 'is_alive', title: '是否有效'},
+                        {field: 'last_login_time', title: '最后登录时间'},
+                        {field: '操作', title: '操作', toolbar: '#barDemo'}
+                    ]
+                ]
+            });
+
+            //监听行工具事件
+            table.on('tool(user_table)', function (obj) {
+                var data = obj.data;
+                if (obj.event === 'del') {
+                    layer.confirm('真的删除行么', function (index) {
+                        obj.del();
+                        layer.close(index);
+                    });
+                } else if (obj.event === 'edit') {
+                    layer.open({
+                        type: 1,
+                        content: 'xxxxxxx'
+                    })
+                }
+            });
+        });
+    </script>
+{% endblock %}

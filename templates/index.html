@@ -1,7 +1,86 @@
-{% extends 'admin/master.html' %}   #为了保持一致，继承admin/master.html模板
+{% extends 'base.html' %}
+
+{% block css %}
+    <style>
+        .site-desc {
+            background: url({{ url_for('static', filename='images/layui/desc.png') }}) center no-repeat;
+        }
+
+        .x-slide_left {
+            background: url({{ url_for('static', filename='images/icon.png') }}) 0 0 no-repeat;
+        }
+    </style>
+    {% block content_css %}
+    {% endblock %}
+{% endblock %}
 
 {% block body %}
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header header header-demo">
+            <div class="layui-main">
+                <a class="logo" href="./index.html">
+                    X-admin v1.0
+                </a>
+                <ul class="layui-nav" lay-filter="">
+                    <li class="layui-nav-item"><img src="{{ url_for('static', filename='images/logo.png') }}" class="layui-circle" style="border: 2px solid #A9B7B7;" width="35px" alt=""></li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">{{ current_user.username }}</a>
+                        <dl class="layui-nav-child"> <!-- 二级菜单 -->
+                            <dd><a href="">个人信息</a></dd>
+                            <dd><a href="">切换帐号</a></dd>
+                            <dd><a href="./login.html">退出</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item x-index"><a href="/">前台首页</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="layui-side layui-bg-black x-side">
+            <div class="layui-side-scroll">
+                <ul class="layui-nav layui-nav-tree site-demo-nav" lay-filter="side">
+                    <li class="layui-nav-item">
+                        <a class="javascript:;" href="javascript:;">
+                            <i class="layui-icon" style="top: 3px;">&#xe612;</i><cite>帐号管理</cite>
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd class="">
+                                <a href="javascript:;" _href="./question-list.html">
+                                    <cite>帐号管理</cite>
+                                </a>
+                            </dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a class="javascript:;" href="javascript:;">
+                            <i class="layui-icon" style="top: 3px;">&#xe63c;</i><cite>车辆管理</cite>
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd class="">
+                                <a href="javascript:;" _href="/">
+                                    <cite>车辆管理</cite>
+                                </a>
+                            </dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item" style="height: 30px; text-align: center">
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="layui-tab site-demo-title x-main" lay-filter="x-tab" lay-allowclose="true">
+            <div class="x-slide_left"></div>
+            <div>
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+        <div class="site-mobile-shade">
+        </div>
+    </div>
+{% endblock %}
 
-    欢迎来到后台管理系统！
-
+{% block javascript %}
+    <script src="{{ url_for('static',filename = 'js/x-admin.js') }}"></script>
+    {% block content_javascript %}
+    {% endblock %}
 {% endblock %}
