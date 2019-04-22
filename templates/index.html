@@ -38,13 +38,13 @@
         <div class="layui-side layui-bg-black x-side">
             <div class="layui-side-scroll">
                 <ul class="layui-nav layui-nav-tree site-demo-nav" lay-filter="side">
-                    <li class="layui-nav-item">
+                    <li class="layui-nav-item {{ 'layui-nav-itemed' if request.path.startswith('/user') else '' }}">
                         <a class="javascript:;" href="javascript:;">
                             <i class="layui-icon" style="top: 3px;">&#xe612;</i><cite>帐号管理</cite>
                         </a>
                         <dl class="layui-nav-child">
-                            <dd class="">
-                                <a href="javascript:;" _href="./question-list.html">
+                            <dd class="{{ 'layui-this' if request.path == url_for('view.user_manage', user_type='admin') else '' }}">
+                                <a href="{{ url_for('view.user_manage', user_type='admin') }}">
                                     <cite>帐号管理</cite>
                                 </a>
                             </dd>
