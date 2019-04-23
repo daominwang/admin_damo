@@ -36,6 +36,7 @@
     {{ " {{#  if(d.is_alive === '已删'){ }} " }}
     <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="online">恢复</a>
     {{ " {{#  }else{ }} " }}
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="reset_pwd">重置密码</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     {{ " {{#  } }} " }}
     {% endautoescape %}
@@ -67,10 +68,10 @@
             defaultToolbar: ['filter'],
             cols: [
                 [
-                    {field: 'id', title: 'ID', sort: true, fixed: 'left'},
-                    {field: 'username', title: '用户名'},
-                    {field: 'is_alive', title: '是否有效'},
-                    {field: 'last_login_time', title: '最后登录时间'},
+                    {field: 'id', title: 'ID', sort: true, fixed: 'left', align: 'center'},
+                    {field: 'username', title: '用户名', align: 'center'},
+                    {field: 'is_alive', title: '是否有效', align: 'center'},
+                    {field: 'last_login_time', title: '最后登录时间', align: 'center'},
                     {field: '操作', title: '操作', toolbar: '#barDemo'}
                 ]
             ],
@@ -103,7 +104,7 @@
                             '            <div class="layui-inline">\n' +
                             '                <label class="layui-form-label">用户名</label>\n' +
                             '                <div class="layui-input-inline">\n' +
-                            '                    <input type="text" name="username" lay-verify="required" autocomplete="off" class="layui-input">\n' +
+                            '                    <input type="text" name="username" lay-verify="required" autocomplete="off" placeholder="请输入用户名" class="layui-input">\n' +
                             '                </div>\n' +
                             '            </div>\n' +
                             '        </div>\n' +
@@ -111,7 +112,7 @@
                             '            <div class="layui-inline">\n' +
                             '                <label class="layui-form-label">密码</label>\n' +
                             '                <div class="layui-input-inline">\n' +
-                            '                    <input type="text" name="password" lay-verify="required" autocomplete="off" class="layui-input">\n' +
+                            '                    <input type="text" name="password" lay-verify="required" autocomplete="off" placeholder="请输入密码" class="layui-input">\n' +
                             '                </div>\n' +
                             '            </div>\n' +
                             '        </div>\n' +
@@ -153,7 +154,7 @@
                             layer.closeAll();
                         }
                     });
-                    break
+                    break;
             }
         });
 
@@ -198,7 +199,7 @@
                         '            <div class="layui-inline">\n' +
                         '                <label class="layui-form-label">用户名</label>\n' +
                         '                <div class="layui-input-inline">\n' +
-                        '                    <input type="text" name="username" lay-verify="required" autocomplete="off" class="layui-input" value="' + data.username + '">\n' +
+                        '                    <input type="text" name="username" lay-verify="required" autocomplete="off" placeholder="请输入用户名" class="layui-input" value="' + data.username + '">\n' +
                         '                </div>\n' +
                         '            </div>\n' +
                         '        </div>\n' +
@@ -263,6 +264,58 @@
                     }, 'json')
                 }, function () {
                     layer.closeAll()
+                });
+            } else if (obj.event === 'reset_pwd') {
+                layer.open({
+                    type: 1
+                    , offset: 'auto'
+                    , id: 'layerDemoauto'
+                    , content: '    <form class="layui-form" action="">\n' +
+                        '        <div class="layui-form-item">\n' +
+                        '            <div class="layui-inline">\n' +
+                        '                <label class="layui-form-label">新密码</label>\n' +
+                        '                <div class="layui-input-inline">\n' +
+                        '                    <input type="text" name="password" lay-verify="required" autocomplete="off" placeholder="请输入新密码" class="layui-input">\n' +
+                        '                </div>\n' +
+                        '            </div>\n' +
+                        '        </div>\n' +
+                        '    </form>'
+                    , btn: ['确定', '取消']
+                    , btnAlign: 'c' //按钮居中
+                    , shade: 0 //不显示遮罩
+                    , yes: function (index, layero) {
+                        var data = {
+                            username: $(layero[0]).find('input[name="username"]').val(),
+                            password: $(layero[0]).find('input[name="password"]').val(),
+                            type: 'add'
+                        };
+                        if (!data.username || !data.password) {
+                            layer.msg('请填写用户名和密码后再提交', {icon: 5, time: 3000});
+                            return
+                        }
+                        $.post("{{ url_for('view.user_manage', user_type=user_type) }}", data, function (res) {
+                            if (res.code === 200) {
+                                layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                                    tableIns.reload({
+                                        where: {
+                                            type: 'list'
+                                        }
+                                        , page: {
+                                            curr: 1 //重新从第 1 页开始
+                                        }, done: function () {
+                                            $('input[name="key_word"]').val(key_word)
+                                        }
+                                    })
+                                });
+                            } else {
+                                layer.msg(res.msg, {icon: 5, time: 3000})
+                            }
+                        }, 'json');
+                        layer.closeAll();
+                    }
+                    , btn2: function () {
+                        layer.closeAll();
+                    }
                 });
             }
         });

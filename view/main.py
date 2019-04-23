@@ -98,4 +98,12 @@ def car_manage():
     if request.method == 'GET':
         return render_template('car_manage.html')
     else:
-        pass
+        o_type = request.values.get('type')
+        if o_type == 'list':
+            pass
+        elif o_type == 'add':
+            pass
+        elif o_type == 'destroy':
+            pass
+        elif o_type == 'modify':
+            pass
