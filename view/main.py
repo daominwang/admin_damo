@@ -7,9 +7,10 @@
 # @Software: PyCharm
 from . import view
 from app import db
+from model.car import Car
 from model.admin import Admin
 from flask_login import login_required
-from flask import request, render_template, abort, json, jsonify
+from flask import request, render_template, abort, json
 
 
 @view.errorhandler(404)
@@ -92,7 +93,7 @@ def user_manage(user_type):
     return render_template('user_manage.html', user_type=user_type)
 
 
-@view.route('/car', methods=['GET', 'POST'])
+@view.route('/car_manage', methods=['GET', 'POST'])
 @login_required
 def car_manage():
     if request.method == 'GET':
@@ -100,10 +101,34 @@ def car_manage():
     else:
         o_type = request.values.get('type')
         if o_type == 'list':
-            pass
+            key_word = request.values.get('key_word')
+            page = request.values.get('page', 1)
+            limit = request.values.get('limit', 10)
+            if key_word:
+                _car_list = Car.query.filter(Car.car_title.like(f'%{key_word}%'))
+            else:
+                _car_list = Car.query
+            _car_list = _car_list.order_by(Car.build_time.desc()).paginate(int(page), int(limit)).items
+            car_list = []
+            for item in _car_list:
+                car_list.append({
+                    'id': item.id,
+                    'car_type': item.car_type,
+                    'car_title': item.car_title,
+                    'classification': item.classification,
+                    'city': item.city,
+                    'car_left': item.car_left,
+                    'status': item.status
+                })
+            return json.dumps({'code': 200, 'data': car_list, 'count': Car.query.count()})
         elif o_type == 'add':
             pass
         elif o_type == 'destroy':
             pass
         elif o_type == 'modify':
             pass
+
+
+@view.route('/car_info', methods=['GET'])
+def car_info():
+    return render_template('car_info.html')

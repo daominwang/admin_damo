@@ -16,7 +16,7 @@ class Car(db.Model):
     car_title = db.Column(db.String(64))
     classification = db.Column(db.String(64))
     city = db.Column(db.String(32))
-    cat_desc = db.Column(db.Text, nullable=True)
+    car_desc = db.Column(db.Text, nullable=True)
     car_left = db.Column(db.Integer, default=0)
     day_rent_original = db.Column(db.Integer, default=0)
     day_rent_actual = db.Column(db.Integer, default=0)
@@ -32,3 +32,4 @@ class Car(db.Model):
     month_rent_actual = db.Column(db.Integer, default=0)
     build_time = db.Column(db.DateTime, default=datetime.now)
     update_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    status = db.Column(db.String(16))

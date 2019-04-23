@@ -50,13 +50,13 @@
                             </dd>
                         </dl>
                     </li>
-                    <li class="layui-nav-item">
+                    <li class="layui-nav-item {{ 'layui-nav-itemed' if request.path.startswith('/car_manage') else '' }}">
                         <a class="javascript:;" href="javascript:;">
                             <i class="layui-icon" style="top: 3px;">&#xe63c;</i><cite>车辆管理</cite>
                         </a>
                         <dl class="layui-nav-child">
-                            <dd class="">
-                                <a href="javascript:;" _href="/">
+                            <dd class="{{ 'layui-this' if request.path == url_for('view.car_manage') else '' }}">
+                                <a href="{{ url_for('view.car_manage') }}">
                                     <cite>车辆管理</cite>
                                 </a>
                             </dd>
