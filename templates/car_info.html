@@ -10,234 +10,282 @@
             margin-top: 20px;
             margin-left: 100px;
         }
+
+        .layui-form-item .layui-input-inline {
+            width: 250px;
+        }
+
+        .layui-layedit {
+            width: calc(100% - 100px);
+        }
+
+        #car_img_preview {
+            max-height: 300px;
+        }
     </style>
 {% endblock %}
 
 {% block content %}
-    <form class="layui-form layui-form-pane" action="">
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">车型图片</label>
-                <button type="button" class="layui-btn layui-btn-danger" id="img"><i class="layui-icon"></i>上传图片</button>
-                <div class="layui-inline layui-word-aux">
-                    这里以限制 60KB 为例
-                </div>
-            </div>
-        </div>
-
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">车型</label>
+    <div style="display: block;">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-form-item layui-hide">
+                <label class="layui-form-label">id</label>
                 <div class="layui-input-inline">
-                    <select name="car_type">
-                        <option value="奥迪">A-奥迪</option>
-                        <option value="奔驰">B-奔驰</option>
-                        <option value="别克">B-别克</option>
-                        <option value="保时捷">B-保时捷</option>
-                        <option value="宾利">B-宾利</option>
-                        <option value="宝马">C-宝马</option>
-                        <option value="长安">C-长安</option>
-                        <option value="大众">D-大众</option>
-                        <option value="东本">D-东本</option>
-                        <option value="丰田">F-丰田</option>
-                        <option value="广本">G-广本</option>
-                        <option value="华晨">H-华晨</option>
-                        <option value="Jeep">J-Jeep</option>
-                        <option value="江淮">J-江淮</option>
-                        <option value="金龙">J-金龙</option>
-                        <option value="考斯特">K-考斯特</option>
-                        <option value="马自达">M-马自达</option>
-                        <option value="全顺">Q-全顺</option>
-                        <option value="现代">X-现代</option>
-                        <option value="雪铁龙">X-雪铁龙</option>
-                        <option value="依维柯">Y-依维柯</option>
-                        <option value="三菱">S-三菱</option>
-                        <option value="尼桑">S-尼桑</option>
-                    </select>
+                    <input type="number" min="0" name="id" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ car.id or '' }}">
                 </div>
             </div>
 
-            <div class="layui-inline">
-                <label class="layui-form-label">标题</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="car_title" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-                </div>
-            </div>
-        </div>
-
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">类型</label>
-                <div class="layui-input-inline">
-                    <select name="classification">
-                        <option value="yec">越野车</option>
-                        <option value="jc">轿车</option>
-                        <option value="swc">商务车</option>
-                        <option value="paoche">跑车</option>
-                        <option value="dkc">大客车</option>
-                        <option value="hq">婚庆租车</option>
-                    </select>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">车型图片</label>
+                    <button type="button" class="layui-btn layui-btn-danger" id="img"><i class="layui-icon"></i>上传图片</button>
+                    <div class="layui-upload-list">
+                        <img class="layui-upload-img" id="car_img_preview">
+                    </div>
                 </div>
             </div>
 
-            <div class="layui-inline">
-                <label class="layui-form-label">城市</label>
-                <div class="layui-input-inline">
-                    <select name="city">
-                        <option value="成都市">成都市</option>
-                    </select>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">车型</label>
+                    <div class="layui-input-inline">
+                        <select name="car_type">
+                            <option value="奥迪">A-奥迪</option>
+                            <option value="奔驰">B-奔驰</option>
+                            <option value="别克">B-别克</option>
+                            <option value="保时捷">B-保时捷</option>
+                            <option value="宾利">B-宾利</option>
+                            <option value="宝马">C-宝马</option>
+                            <option value="长安">C-长安</option>
+                            <option value="大众">D-大众</option>
+                            <option value="东本">D-东本</option>
+                            <option value="丰田">F-丰田</option>
+                            <option value="广本">G-广本</option>
+                            <option value="华晨">H-华晨</option>
+                            <option value="Jeep">J-Jeep</option>
+                            <option value="江淮">J-江淮</option>
+                            <option value="金龙">J-金龙</option>
+                            <option value="考斯特">K-考斯特</option>
+                            <option value="马自达">M-马自达</option>
+                            <option value="全顺">Q-全顺</option>
+                            <option value="现代">X-现代</option>
+                            <option value="雪铁龙">X-雪铁龙</option>
+                            <option value="依维柯">Y-依维柯</option>
+                            <option value="三菱">S-三菱</option>
+                            <option value="尼桑">S-尼桑</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">库存</label>
-                <div class="layui-input-inline">
-                    <input type="number" min="0" name="car_left" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-                </div>
-            </div>
-        </div>
-
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-            <legend>原价</legend>
-        </fieldset>
-
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">日租价</label>
-                <div class="layui-input-inline">
-                    <input type="number" min="0" name="day_rent_original" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-                </div>
-            </div>
-
-            <div class="layui-inline">
-                <label class="layui-form-label">押金(预授权)</label>
-                <div class="layui-input-inline">
-                    <input type="number" min="0" name="deposit_original" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-                </div>
-            </div>
-        </div>
-
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">每日限里程数(公里)</label>
-                <div class="layui-input-inline">
-                    <input type="number" min="0" name="mileage_limit_per_day_original" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                <div class="layui-inline">
+                    <label class="layui-form-label">标题</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="car_title" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ car.car_title or '' }}">
+                    </div>
                 </div>
             </div>
 
-            <div class="layui-inline">
-                <label class="layui-form-label">超公里费(每公里)</label>
-                <div class="layui-input-inline">
-                    <input type="number" min="0" name="ext_mileage_pay_original" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">类型</label>
+                    <div class="layui-input-inline">
+                        <select name="classification">
+                            <option value="yec">越野车</option>
+                            <option value="jc">轿车</option>
+                            <option value="swc">商务车</option>
+                            <option value="paoche">跑车</option>
+                            <option value="dkc">大客车</option>
+                            <option value="hq">婚庆租车</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">超时费(每小时)</label>
-                <div class="layui-input-inline">
-                    <input type="number" min="0" name="ext_time_pay_original" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-                </div>
-            </div>
-
-            <div class="layui-inline">
-                <label class="layui-form-label">包月价</label>
-                <div class="layui-input-inline">
-                    <input type="number" min="0" name="month_rent_original" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-                </div>
-            </div>
-        </div>
-
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-            <legend>活动价</legend>
-        </fieldset>
-
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">日租价</label>
-                <div class="layui-input-inline">
-                    <input type="number" min="0" name="day_rent_actual" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                <div class="layui-inline">
+                    <label class="layui-form-label">城市</label>
+                    <div class="layui-input-inline">
+                        <select name="city">
+                            <option value="成都市">成都市</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <div class="layui-inline">
-                <label class="layui-form-label">押金(预授权)</label>
-                <div class="layui-input-inline">
-                    <input type="number" min="0" name="deposit_actual" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-                </div>
-            </div>
-        </div>
-
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">每日限里程数(公里)</label>
-                <div class="layui-input-inline">
-                    <input type="number" min="0" name="mileage_limit_per_day_actual" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">库存</label>
+                    <div class="layui-input-inline">
+                        <input type="number" min="0" name="car_left" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ car.car_left or 0 }}">
+                    </div>
                 </div>
             </div>
 
-            <div class="layui-inline">
-                <label class="layui-form-label">超公里费(每公里)</label>
-                <div class="layui-input-inline">
-                    <input type="number" min="0" name="ext_mileage_pay_actual" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend>原价</legend>
+            </fieldset>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">日租价</label>
+                    <div class="layui-input-inline">
+                        <input type="number" min="0" name="day_rent_original" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ car.day_rent_original or 0 }}">
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">押金(预授权)</label>
+                    <div class="layui-input-inline">
+                        <input type="number" min="0" name="deposit_original" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ car.deposit_original or 0 }}">
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">超时费(每小时)</label>
-                <div class="layui-input-inline">
-                    <input type="number" min="0" name="ext_time_pay_actual" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">每日限里程数(公里)</label>
+                    <div class="layui-input-inline">
+                        <input type="number" min="0" name="mileage_limit_per_day_original" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ car.mileage_limit_per_day_original or 0 }}">
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">超公里费(每公里)</label>
+                    <div class="layui-input-inline">
+                        <input type="number" min="0" name="ext_mileage_pay_original" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ car.ext_mileage_pay_original or 0 }}">
+                    </div>
                 </div>
             </div>
 
-            <div class="layui-inline">
-                <label class="layui-form-label">包月价</label>
-                <div class="layui-input-inline">
-                    <input type="number" min="0" name="month_rent_actual" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">超时费(每小时)</label>
+                    <div class="layui-input-inline">
+                        <input type="number" min="0" name="ext_time_pay_original" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ car.ext_time_pay_original or 0 }}">
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">包月价</label>
+                    <div class="layui-input-inline">
+                        <input type="number" min="0" name="month_rent_original" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ car.month_rent_original or 0 }}">
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-            <legend>描述</legend>
-        </fieldset>
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend>活动价</legend>
+            </fieldset>
 
-        <div class="layui-form-item">
-            <label class="layui-form-label">描述</label>
-            <div class="layui-input-inline">
-                <input type="number" min="0" name="car_desc" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-            </div>
-        </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">日租价</label>
+                    <div class="layui-input-inline">
+                        <input type="number" min="0" name="day_rent_actual" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ car.day_rent_actual or 0 }}">
+                    </div>
+                </div>
 
-        <div class="layui-form-item" style="margin-left: 250px">
-            <div class="layui-inline">
-                <button class="layui-btn" lay-submit="" lay-filter="demo2">跳转式提交</button>
+                <div class="layui-inline">
+                    <label class="layui-form-label">押金(预授权)</label>
+                    <div class="layui-input-inline">
+                        <input type="number" min="0" name="deposit_actual" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ car.deposit_actual or 0 }}">
+                    </div>
+                </div>
             </div>
-            <div class="layui-inline">
-                <button class="layui-btn" lay-submit="" lay-filter="demo2">跳转式提交</button>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">每日限里程数(公里)</label>
+                    <div class="layui-input-inline">
+                        <input type="number" min="0" name="mileage_limit_per_day_actual" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ car.mileage_limit_per_day_actual or 0 }}">
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">超公里费(每公里)</label>
+                    <div class="layui-input-inline">
+                        <input type="number" min="0" name="ext_mileage_pay_actual" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ car.ext_mileage_pay_actual or 0 }}">
+                    </div>
+                </div>
             </div>
-        </div>
-    </form>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">超时费(每小时)</label>
+                    <div class="layui-input-inline">
+                        <input type="number" min="0" name="ext_time_pay_actual" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ car.ext_time_pay_actual or 0 }}">
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">包月价</label>
+                    <div class="layui-input-inline">
+                        <input type="number" min="0" name="month_rent_actual" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="{{ car.month_rent_actual or 0 }}">
+                    </div>
+                </div>
+            </div>
+
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend>描述</legend>
+            </fieldset>
+
+            <div class="layui-form-item">
+                <textarea id="car_desc"></textarea>
+            </div>
+
+            <div class="layui-form-item" style="margin-left: 250px">
+                <div class="layui-inline">
+                    <button class="layui-btn" lay-submit="" lay-filter="save">保存</button>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn" lay-submit="" lay-filter="cancel">取消并返回</button>
+                </div>
+            </div>
+        </form>
+    </div>
 {% endblock %}
 
 {% block content_javascript %}
     <script>
-        //一般直接写在一个js文件中
+        var layedit, layer, form, index, upload;
+        layui.use('layedit', function () {
+            layedit = layui.layedit;
+            index = layedit.build('car_desc', {
+                height: 180 //设置编辑器高度
+            }); //建立编辑器
+        });
+
         layui.use(['layer', 'form'], function () {
-            var layer = layui.layer
-                , form = layui.form;
-            form.on('submit(demo2)', function (data) {
-                console.log(data.elem) //被执行事件的元素DOM对象，一般为button对象
-                console.log(data.form) //被执行提交的form对象，一般在存在form标签时才会返回
-                console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+            layer = layui.layer;
+            form = layui.form;
+            form.on('submit(save)', function (data) {
+                layedit.sync(index);
+                data.field.car_desc = $('#car_desc').val();
                 layer.closeAll()
                 return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
             });
+        });
+
+        layui.use('upload', function () {
+            upload = layui.upload;
+            var upload_data;
+            upload.render({
+                elem: '#img'
+                , url: '/upload'
+                , before: function (obj) {
+                    upload_data = obj;
+                }
+                , done: function (res) {
+                    if (res.code !== 200) {
+                        return layer.alert('上传失败，请重试', {icon: 5, time: 3000})
+                    } else {
+                        upload_data.preview(function (index, file, result) {
+                            $('#car_img_preview').attr('src', result);
+                        });
+                    }
+                }
+                , error: function () {
+                    return layer.alert('上传失败，请重试', {icon: 5, time: 3000})
+                }
+            })
         });
     </script>
 {% endblock %}

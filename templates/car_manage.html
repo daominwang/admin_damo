@@ -79,7 +79,7 @@
                     {field: 'city', title: '城市', align: 'center'},
                     {field: 'car_left', title: '库存', align: 'center'},
                     {field: 'status', title: '状态', align: 'center'},
-                    {field: '操作', title: '操作', toolbar: '#barDemo'}
+                    {field: '操作', title: '操作', toolbar: '#barDemo', minWidth: 200}
                 ]
             ],
             id: 'car_table'
@@ -197,24 +197,7 @@
                     layer.closeAll()
                 });
             } else if (obj.event === 'edit') {
-                layer.open({
-                    type: 2
-                    , offset: 'auto'
-                    , id: 'layerDemoauto'
-                    , content: '{{ url_for("view.car_info") }}'
-                    , area: ['500px', '750px']
-                    , btn: ['确定', '取消']
-                    , btnAlign: 'c' //按钮居中
-                    , shade: 0 //不显示遮罩
-                    , yes: function (index, layero) {
-                        debugger
-                        console.log(index)
-                        console.log(layero)
-                    }
-                    , btn2: function () {
-                        layer.closeAll();
-                    }
-                })
+                window.location.href = "{{ url_for('view.car_info') }}?id=" + data.id
             } else if (obj.event === 'online') {
                 layer.confirm('确认恢复该账号吗？', {
                     btn: ['确认', '取消'],

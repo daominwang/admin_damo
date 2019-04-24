@@ -129,6 +129,19 @@ def car_manage():
             pass
 
 
-@view.route('/car_info', methods=['GET'])
+@view.route('/car_info', methods=['GET', 'POST'])
 def car_info():
-    return render_template('car_info.html')
+    if request.method == 'GET':
+        _id = request.values.get('id')
+        if _id:
+            car = Car.query.get(_id)
+            if not car:
+                abort(404)
+            return render_template('car_info.html', car=car)
+        else:
+            pass
+
+
+@view.route('/upload', methods=['POST'])
+def upload():
+    return json.dumps({'code': 200, 'msg': '上传成功'})
