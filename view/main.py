@@ -5,12 +5,17 @@
 # @Email   : wangdaomin123@hotmail.com
 # @File    : main.py 
 # @Software: PyCharm
+import os
+import time
 from . import view
 from app import db
 from model.car import Car
+from hashlib import sha224
 from model.admin import Admin
+from datetime import datetime
+from model.upload import Upload
 from flask_login import login_required
-from flask import request, render_template, abort, json
+from flask import request, render_template, abort, json, redirect
 
 
 @view.errorhandler(404)
@@ -19,9 +24,8 @@ def page_not_found(e):
 
 
 @view.route('/')
-@login_required
 def index():
-    return render_template('index.html')
+    return redirect('/login')
 
 
 @view.route('/user/<user_type>', methods=['GET', 'POST'])
@@ -140,8 +144,39 @@ def car_info():
             return render_template('car_info.html', car=car)
         else:
             pass
+    else:
+        _args = request.values.to_dict()
+        _id = _args.get('id')
+        if _id:
+            # 修改
+            pass
+        else:
+            # 新增
+            pass
+        return json.dumps({'code': 500, 'msg': '保存错误'})
 
 
 @view.route('/upload', methods=['POST'])
 def upload():
-    return json.dumps({'code': 200, 'msg': '上传成功'})
+    try:
+        # 取sha1，判断图片是否已经存在,如果已经存在，则直接返回链接地址，否则写文件，返回地址
+        f_byte = request.files.get('file').stream._file.read()
+        sha224_str = sha224(f_byte).hexdigest()
+        upload_info = Upload.query.filter_by(sha224=sha224_str).first()
+        if upload_info:
+            return json.dumps({'code': 200, 'msg': f'/static/uploads/{upload_info.path}/{upload_info.file_name}'})
+        else:
+            suffix = request.files.get('file').filename.split('.')[-1]
+            f_name = f"{round(time.time())}.{suffix}"
+            _date = datetime.now().strftime('%Y%m%d')
+            _path = os.path.join('static', 'uploads', _date)
+            if not os.path.exists(_path):
+                os.makedirs(_path)
+            with open(os.path.join(_path, f_name), 'wb') as f_obj:
+                f_obj.write(f_byte)
+            u = Upload(path=_date, file_name=f_name, sha224=sha224_str)
+            db.session.add(u)
+            db.session.commit()
+            return json.dumps({'code': 200, 'msg': f'/static/uploads/{_date}/{f_name}'})
+    except Exception as e:
+        return json.dumps({'code': 500, 'msg': '网络异常，请稍候重试'})

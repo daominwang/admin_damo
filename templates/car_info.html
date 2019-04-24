@@ -40,7 +40,7 @@
                     <label class="layui-form-label">车型图片</label>
                     <button type="button" class="layui-btn layui-btn-danger" id="img"><i class="layui-icon"></i>上传图片</button>
                     <div class="layui-upload-list">
-                        <img class="layui-upload-img" id="car_img_preview">
+                        <img class="layui-upload-img" id="car_img_preview" src="{{ car.img or '' }}">
                     </div>
                 </div>
             </div>
@@ -50,29 +50,29 @@
                     <label class="layui-form-label">车型</label>
                     <div class="layui-input-inline">
                         <select name="car_type">
-                            <option value="奥迪">A-奥迪</option>
-                            <option value="奔驰">B-奔驰</option>
-                            <option value="别克">B-别克</option>
-                            <option value="保时捷">B-保时捷</option>
-                            <option value="宾利">B-宾利</option>
-                            <option value="宝马">C-宝马</option>
-                            <option value="长安">C-长安</option>
-                            <option value="大众">D-大众</option>
-                            <option value="东本">D-东本</option>
-                            <option value="丰田">F-丰田</option>
-                            <option value="广本">G-广本</option>
-                            <option value="华晨">H-华晨</option>
-                            <option value="Jeep">J-Jeep</option>
-                            <option value="江淮">J-江淮</option>
-                            <option value="金龙">J-金龙</option>
-                            <option value="考斯特">K-考斯特</option>
-                            <option value="马自达">M-马自达</option>
-                            <option value="全顺">Q-全顺</option>
-                            <option value="现代">X-现代</option>
-                            <option value="雪铁龙">X-雪铁龙</option>
-                            <option value="依维柯">Y-依维柯</option>
-                            <option value="三菱">S-三菱</option>
-                            <option value="尼桑">S-尼桑</option>
+                            <option value="奥迪" {{ 'selected' if '奥迪' in car.car_type else '' }}>A-奥迪</option>
+                            <option value="奔驰" {{ 'selected' if '奔驰' in car.car_type else '' }}>B-奔驰</option>
+                            <option value="别克" {{ 'selected' if '别克' in car.car_type else '' }}>B-别克</option>
+                            <option value="保时捷" {{ 'selected' if '保时捷' in car.car_type else '' }}>B-保时捷</option>
+                            <option value="宾利" {{ 'selected' if '宾利' in car.car_type else '' }}>B-宾利</option>
+                            <option value="宝马" {{ 'selected' if '宝马' in car.car_type else '' }}>C-宝马</option>
+                            <option value="长安" {{ 'selected' if '长安' in car.car_type else '' }}>C-长安</option>
+                            <option value="大众" {{ 'selected' if '大众' in car.car_type else '' }}>D-大众</option>
+                            <option value="东本" {{ 'selected' if '东本' in car.car_type else '' }}>D-东本</option>
+                            <option value="丰田" {{ 'selected' if '丰田' in car.car_type else '' }}>F-丰田</option>
+                            <option value="广本" {{ 'selected' if '广本' in car.car_type else '' }}>G-广本</option>
+                            <option value="华晨" {{ 'selected' if '华晨' in car.car_type else '' }}>H-华晨</option>
+                            <option value="Jeep" {{ 'selected' if 'Jeep' in car.car_type else '' }}>J-Jeep</option>
+                            <option value="江淮" {{ 'selected' if '江淮' in car.car_type else '' }}>J-江淮</option>
+                            <option value="金龙" {{ 'selected' if '金龙' in car.car_type else '' }}>J-金龙</option>
+                            <option value="考斯特" {{ 'selected' if '考斯特' in car.car_type else '' }}>K-考斯特</option>
+                            <option value="马自达" {{ 'selected' if '马自达' in car.car_type else '' }}>M-马自达</option>
+                            <option value="全顺" {{ 'selected' if '全顺' in car.car_type else '' }}>Q-全顺</option>
+                            <option value="现代" {{ 'selected' if '现代' in car.car_type else '' }}>X-现代</option>
+                            <option value="雪铁龙" {{ 'selected' if '雪铁龙' in car.car_type else '' }}>X-雪铁龙</option>
+                            <option value="依维柯" {{ 'selected' if '依维柯' in car.car_type else '' }}>Y-依维柯</option>
+                            <option value="三菱" {{ 'selected' if '三菱' in car.car_type else '' }}>S-三菱</option>
+                            <option value="尼桑" {{ 'selected' if '尼桑' in car.car_type else '' }}>S-尼桑</option>
                         </select>
                     </div>
                 </div>
@@ -90,12 +90,12 @@
                     <label class="layui-form-label">类型</label>
                     <div class="layui-input-inline">
                         <select name="classification">
-                            <option value="yec">越野车</option>
-                            <option value="jc">轿车</option>
-                            <option value="swc">商务车</option>
-                            <option value="paoche">跑车</option>
-                            <option value="dkc">大客车</option>
-                            <option value="hq">婚庆租车</option>
+                            <option value="越野车" {{ 'selected' if '越野车' in car.classification else '' }}>越野车</option>
+                            <option value="轿车" {{ 'selected' if '轿车' in car.classification else '' }}>轿车</option>
+                            <option value="商务车" {{ 'selected' if '商务车' in car.classification else '' }}>商务车</option>
+                            <option value="跑车" {{ 'selected' if '跑车' in car.classification else '' }}>跑车</option>
+                            <option value="大客车" {{ 'selected' if '大客车' in car.classification else '' }}>大客车</option>
+                            <option value="婚庆租车" {{ 'selected' if '婚庆租车' in car.classification else '' }}>婚庆租车</option>
                         </select>
                     </div>
                 </div>
@@ -228,7 +228,7 @@
             </fieldset>
 
             <div class="layui-form-item">
-                <textarea id="car_desc"></textarea>
+                <textarea id="car_desc">{{ car.car_desc or '' }}</textarea>
             </div>
 
             <div class="layui-form-item" style="margin-left: 250px">
@@ -259,9 +259,24 @@
             form.on('submit(save)', function (data) {
                 layedit.sync(index);
                 data.field.car_desc = $('#car_desc').val();
-                layer.closeAll()
+                data.field.img = $('#car_img_preview').attr('src');
+                $.post('', data.field, function (res) {
+                    if (res.code === 200) {
+                        layer.msg('保存成功', {icon: 1, time: 1000, shade: [0.8, '#393D49'], shadeClose: true}, function () {
+                            window.location.href = '{{ url_for('view.car_manage') }}';
+                        })
+                    } else {
+                        layer.msg(res.msg, {icon: 5, time: 3000, shade: [0.8, '#393D49'], shadeClose: true}, function () {
+                            layer.closeAll();
+                        })
+                    }
+                }, 'json');
                 return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
             });
+            form.on('submit(cancel)', function () {
+                window.location.href = '{{ url_for('view.car_manage') }}';
+                return false;
+            })
         });
 
         layui.use('upload', function () {
@@ -277,8 +292,8 @@
                     if (res.code !== 200) {
                         return layer.alert('上传失败，请重试', {icon: 5, time: 3000})
                     } else {
-                        upload_data.preview(function (index, file, result) {
-                            $('#car_img_preview').attr('src', result);
+                        upload_data.preview(function () {
+                            $('#car_img_preview').attr('src', res.msg);
                         });
                     }
                 }

@@ -16,8 +16,9 @@ from view import view
 
 app.register_blueprint(view)
 
-from model.admin import *
-from model.car import *
+from model.admin import Admin
+from model.car import Car
+from model.upload import Upload
 
 if __name__ == '__main__':
     app.run(debug=True, port=8888)
