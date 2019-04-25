@@ -32,4 +32,4 @@ class Car(db.Model):
     month_rent_actual = db.Column(db.Integer, default=0)
     build_time = db.Column(db.DateTime, default=datetime.now)
     update_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
-    status = db.Column(db.String(16))
+    status = db.Column(db.Boolean, nullable=True, default=True)

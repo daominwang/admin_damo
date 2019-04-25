@@ -50,12 +50,12 @@
                             </dd>
                         </dl>
                     </li>
-                    <li class="layui-nav-item {{ 'layui-nav-itemed' if request.path.startswith('/car_manage') else '' }}">
+                    <li class="layui-nav-item {{ 'layui-nav-itemed' if request.path.startswith('/car_manage') or request.path.startswith('/car_info') else '' }}">
                         <a class="javascript:;" href="javascript:;">
                             <i class="layui-icon" style="top: 3px;">&#xe63c;</i><cite>车辆管理</cite>
                         </a>
                         <dl class="layui-nav-child">
-                            <dd class="{{ 'layui-this' if request.path == url_for('view.car_manage') else '' }}">
+                            <dd class="{{ 'layui-this' if request.path == url_for('view.car_manage') or request.path.startswith('/car_info') else '' }}">
                                 <a href="{{ url_for('view.car_manage') }}">
                                     <cite>车辆管理</cite>
                                 </a>
@@ -81,6 +81,7 @@
 
 {% block javascript %}
     <script src="{{ url_for('static',filename = 'js/x-admin.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static',filename = 'lib/wangEditor.min.js') }}"></script>
     {% block content_javascript %}
     {% endblock %}
 {% endblock %}

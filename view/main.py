@@ -125,12 +125,22 @@ def car_manage():
                     'status': item.status
                 })
             return json.dumps({'code': 200, 'data': car_list, 'count': Car.query.count()})
-        elif o_type == 'add':
-            pass
+        elif o_type == 'online':
+            _id = request.values.get('id')
+            if not _id:
+                return json.dumps({'code': 500, 'msg': '参数错误'})
+            car = Car.query.get(_id)
+            car.status = True
+            db.session.commit()
+            return json.dumps({'code': 200, 'msg': '上线车辆信息成功'})
         elif o_type == 'destroy':
-            pass
-        elif o_type == 'modify':
-            pass
+            _id = request.values.get('id')
+            if not _id:
+                return json.dumps({'code': 500, 'msg': '参数错误'})
+            car = Car.query.get(_id)
+            car.status = False
+            db.session.commit()
+            return json.dumps({'code': 200, 'msg': '下线车辆信息成功'})
 
 
 @view.route('/car_info', methods=['GET', 'POST'])
@@ -143,30 +153,54 @@ def car_info():
                 abort(404)
             return render_template('car_info.html', car=car)
         else:
-            pass
+            return render_template('car_info.html', car=Car())
     else:
         _args = request.values.to_dict()
         _id = _args.get('id')
         if _id:
             # 修改
-            pass
+            car = Car.query.get(_id)
+            car.update_time = datetime.now()
         else:
             # 新增
-            pass
-        return json.dumps({'code': 500, 'msg': '保存错误'})
+            car = Car()
+            car.status = 'normal'
+        car.img = _args.get('img')
+        car.car_type = _args.get('car_type')
+        car.car_title = _args.get('car_title')
+        car.classification = _args.get('classification')
+        car.city = _args.get('city')
+        car.car_desc = _args.get('car_desc')
+        car.car_left = _args.get('car_left')
+        car.day_rent_original = _args.get('day_rent_original')
+        car.day_rent_actual = _args.get('day_rent_actual')
+        car.deposit_original = _args.get('deposit_original')
+        car.deposit_actual = _args.get('deposit_actual')
+        car.mileage_limit_per_day_original = _args.get('mileage_limit_per_day_original')
+        car.mileage_limit_per_day_actual = _args.get('mileage_limit_per_day_actual')
+        car.ext_mileage_pay_original = _args.get('ext_mileage_pay_original')
+        car.ext_mileage_pay_actual = _args.get('ext_mileage_pay_actual')
+        car.ext_time_pay_original = _args.get('ext_time_pay_original')
+        car.ext_time_pay_actual = _args.get('ext_time_pay_actual')
+        car.month_rent_original = _args.get('month_rent_original')
+        car.month_rent_actual = _args.get('month_rent_actual')
+        db.session.add(car)
+        db.session.commit()
+        return json.dumps({'code': 200, 'msg': '保存成功'})
 
 
 @view.route('/upload', methods=['POST'])
 def upload():
     try:
         # 取sha1，判断图片是否已经存在,如果已经存在，则直接返回链接地址，否则写文件，返回地址
-        f_byte = request.files.get('file').stream._file.read()
+        f_name_ori = next(request.files.keys())
+        f_byte = request.files.get(f_name_ori).stream._file.read()
         sha224_str = sha224(f_byte).hexdigest()
         upload_info = Upload.query.filter_by(sha224=sha224_str).first()
         if upload_info:
-            return json.dumps({'code': 200, 'msg': f'/static/uploads/{upload_info.path}/{upload_info.file_name}'})
+            return json.dumps({'code': 200, 'msg': '', 'data': {'src': f'/static/uploads/{upload_info.path}/{upload_info.file_name}', 'title': upload_info.file_name}})
         else:
-            suffix = request.files.get('file').filename.split('.')[-1]
+            suffix = request.files.get(f_name_ori).filename.split('.')[-1]
             f_name = f"{round(time.time())}.{suffix}"
             _date = datetime.now().strftime('%Y%m%d')
             _path = os.path.join('static', 'uploads', _date)
@@ -177,6 +211,6 @@ def upload():
             u = Upload(path=_date, file_name=f_name, sha224=sha224_str)
             db.session.add(u)
             db.session.commit()
-            return json.dumps({'code': 200, 'msg': f'/static/uploads/{_date}/{f_name}'})
+            return json.dumps({'code': 200, 'msg': '', 'data': {'src': f'/static/uploads/{_date}/{f_name}', 'title': f_name}})
     except Exception as e:
         return json.dumps({'code': 500, 'msg': '网络异常，请稍候重试'})
