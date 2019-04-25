@@ -14,6 +14,7 @@ from hashlib import sha224
 from model.admin import Admin
 from datetime import datetime
 from model.upload import Upload
+from sqlalchemy import or_, case
 from flask_login import login_required
 from flask import request, render_template, abort, json, redirect
 
@@ -109,10 +110,21 @@ def car_manage():
             page = request.values.get('page', 1)
             limit = request.values.get('limit', 10)
             if key_word:
-                _car_list = Car.query.filter(Car.car_title.like(f'%{key_word}%'))
+                _car_list = Car.query.filter(
+                    or_(
+                        Car.car_type.like(f'%{key_word}%'),
+                        Car.car_title.like(f'%{key_word}%'),
+                        Car.classification.like(f'%{key_word}%'),
+                        Car.car_desc.like(f'%{key_word}%')
+                    )
+                )
             else:
                 _car_list = Car.query
-            _car_list = _car_list.order_by(Car.build_time.desc()).paginate(int(page), int(limit)).items
+
+            count = _car_list.count()
+            _car_list = _car_list.order_by(
+                db.case(((Car.update_time, Car.update_time),), else_=Car.build_time).desc()
+            ).paginate(int(page), int(limit)).items
             car_list = []
             for item in _car_list:
                 car_list.append({
@@ -124,7 +136,7 @@ def car_manage():
                     'car_left': item.car_left,
                     'status': item.status
                 })
-            return json.dumps({'code': 200, 'data': car_list, 'count': Car.query.count()})
+            return json.dumps({'code': 200, 'data': car_list, 'count': count})
         elif o_type == 'online':
             _id = request.values.get('id')
             if not _id:
