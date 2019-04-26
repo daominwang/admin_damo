@@ -15,7 +15,7 @@ from hashlib import sha224
 from datetime import datetime
 from model.admin import Admin
 from model.upload import Upload
-from flask_login import login_required
+from flask_login import login_required, current_user, logout_user
 from flask import request, render_template, abort, json, redirect
 
 
@@ -63,6 +63,8 @@ def user_manage(user_type):
                     return json.dumps({'code': 500, 'msg': '网络异常，请稍候重试'})
                 admin.username = user_name
                 db.session.commit()
+                if current_user.id == admin.id:
+                    logout_user()
                 return json.dumps({'code': 200, 'msg': '修改成功'})
             elif o_type == 'destroy':
                 _id = request.values.get('id')
@@ -71,6 +73,8 @@ def user_manage(user_type):
                 admin = Admin.query.get(_id)
                 admin.is_alive = False
                 db.session.commit()
+                if current_user.id == admin.id:
+                    logout_user()
                 return json.dumps({'code': 200, 'msg': '删除账号成功'})
             elif o_type == 'online':
                 _id = request.values.get('id')

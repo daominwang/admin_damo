@@ -9,15 +9,9 @@ import json
 from . import view
 from flask import json
 from model.admin import Admin
-from app import login_manager
 from model.form import LoginForm
 from flask_login import login_user, login_required, logout_user
 from flask import request, render_template, flash
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return Admin.query.get(user_id)
 
 
 @view.route('/login', methods=['GET', 'POST'])
@@ -44,12 +38,6 @@ def login():
                 return json.dumps({'code': 500, 'msg': '帐号或密码不正确'})
         else:
             return json.dumps({'code': 500, 'msg': '参数错误'})
-
-
-@view.route('/xxx')
-@login_required
-def xxx():
-    return 'hello world'
 
 
 @view.route("/logout")
