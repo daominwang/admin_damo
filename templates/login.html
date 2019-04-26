@@ -56,7 +56,7 @@
                     function (data) {
                         $.post('', data.field, function (result) {
                             if (result.code === 200) {
-                                window.location.href = '{{ url_for('view.user_manage', user_type="admin") }}';
+                                window.location.href = '{{ url_for('view.user_manage') }}';
                             } else {
                                 layer.alert(result.msg, {icon: 5, time: 3000})
                             }

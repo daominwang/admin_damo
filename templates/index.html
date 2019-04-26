@@ -31,7 +31,7 @@
                             <dd><a href="{{ url_for('view.logout') }}">退出</a></dd>
                         </dl>
                     </li>
-                    <li class="layui-nav-item x-index"><a href="{{ url_for('view.user_manage', user_type="admin") }}">前台首页</a></li>
+                    <li class="layui-nav-item x-index"><a href="{{ url_for('view.user_manage') }}">前台首页</a></li>
                 </ul>
             </div>
         </div>
@@ -43,8 +43,8 @@
                             <i class="layui-icon" style="top: 3px;">&#xe612;</i><cite>帐号管理</cite>
                         </a>
                         <dl class="layui-nav-child">
-                            <dd class="{{ 'layui-this' if request.path == url_for('view.user_manage', user_type='admin') else '' }}">
-                                <a href="{{ url_for('view.user_manage', user_type='admin') }}">
+                            <dd class="{{ 'layui-this' if request.path == url_for('view.user_manage') else '' }}">
+                                <a href="{{ url_for('view.user_manage') }}">
                                     <cite>帐号管理</cite>
                                 </a>
                             </dd>

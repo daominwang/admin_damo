@@ -33,3 +33,19 @@ class Car(db.Model):
     build_time = db.Column(db.DateTime, default=datetime.now)
     update_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     status = db.Column(db.Boolean, nullable=True, default=True)
+
+
+class CarType(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    car_type = db.Column(db.String(64))
+    build_time = db.Column(db.DateTime, default=datetime.now)
+    update_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    status = db.Column(db.Boolean, nullable=True, default=True)
+
+
+class Classification(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    classification = db.Column(db.String(64))
+    build_time = db.Column(db.DateTime, default=datetime.now)
+    update_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    status = db.Column(db.Boolean, nullable=True, default=True)

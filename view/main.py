@@ -13,7 +13,7 @@ from model.car import Car
 from sqlalchemy import or_
 from hashlib import sha224
 from datetime import datetime
-from model.admin import Admin
+from model.user import User
 from model.upload import Upload
 from flask_login import login_required, current_user, logout_user
 from flask import request, render_template, abort, json, redirect
@@ -29,77 +29,76 @@ def index():
     return redirect('/login')
 
 
-@view.route('/user/<user_type>', methods=['GET', 'POST'])
+@view.route('/user_manage', methods=['GET', 'POST'])
 @login_required
-def user_manage(user_type):
-    if user_type == 'admin':
-        if request.method == 'POST':
-            o_type = request.values.get('type')
-            if o_type == 'list':
-                key_word = request.values.get('key_word')
-                page = request.values.get('page', 1)
-                limit = request.values.get('limit', 10)
-                if key_word:
-                    _admin_list = Admin.query.filter(Admin.username.like(f'%{key_word}%'))
-                else:
-                    _admin_list = Admin.query
-                _admin_list = _admin_list.order_by(Admin.last_login_time.desc()).paginate(int(page), int(limit)).items
-                admin_list = []
-                for item in _admin_list:
-                    admin_list.append({
-                        'id': item.id,
-                        'username': item.username,
-                        'is_alive': item.is_alive,
-                        'last_login_time': item.last_login_time.strftime('%Y-%m-%d %H:%M:%S') if item.last_login_time else None
-                    })
-                return json.dumps({'code': 200, 'data': admin_list, 'count': Admin.query.count()})
-            elif o_type == 'modify':
-                _id = request.values.get('id')
-                user_name = request.values.get('username')
-                if not _id or not user_name:
-                    return json.dumps({'code': 500, 'msg': '参数错误'})
-                admin = Admin.query.get(_id)
-                if not admin:
-                    return json.dumps({'code': 500, 'msg': '网络异常，请稍候重试'})
-                admin.username = user_name
-                db.session.commit()
-                if current_user.id == admin.id:
-                    logout_user()
-                return json.dumps({'code': 200, 'msg': '修改成功'})
-            elif o_type == 'destroy':
-                _id = request.values.get('id')
-                if not _id:
-                    return json.dumps({'code': 500, 'msg': '参数错误'})
-                admin = Admin.query.get(_id)
-                admin.is_alive = False
-                db.session.commit()
-                if current_user.id == admin.id:
-                    logout_user()
-                return json.dumps({'code': 200, 'msg': '删除账号成功'})
-            elif o_type == 'online':
-                _id = request.values.get('id')
-                if not _id:
-                    return json.dumps({'code': 500, 'msg': '参数错误'})
-                admin = Admin.query.get(_id)
-                admin.is_alive = True
-                db.session.commit()
-                return json.dumps({'code': 200, 'msg': '恢复账号成功'})
-            elif o_type == 'add':
-                user_name = request.values.get('username')
-                password = request.values.get('password')
-                if not user_name or not password:
-                    return json.dumps({'code': 500, 'msg': '参数错误'})
-                admin = Admin()
-                admin.username = user_name
-                admin.set_password(password)
-                db.session.add(admin)
-                db.session.commit()
-                return json.dumps({'code': 200, 'msg': '添加成功'})
-    elif user_type == 'user':
-        pass
+def user_manage():
+    if request.method == 'POST':
+        o_type = request.values.get('type')
+        if o_type == 'list':
+            key_word = request.values.get('key_word')
+            page = request.values.get('page', 1)
+            limit = request.values.get('limit', 10)
+            if key_word:
+                _user_list = User.query.filter(User.username.like(f'%{key_word}%'))
+            else:
+                _user_list = User.query
+            _user_list = _user_list.order_by(User.last_login_time.desc()).paginate(int(page), int(limit)).items
+            user_list = []
+            for item in _user_list:
+                user_list.append({
+                    'id': item.id,
+                    'username': item.username,
+                    'is_alive': item.is_alive,
+                    'is_super': item.is_super,
+                    'last_login_time': item.last_login_time.strftime('%Y-%m-%d %H:%M:%S') if item.last_login_time else None
+                })
+            return json.dumps({'code': 200, 'data': user_list, 'count': User.query.count()})
+        elif o_type == 'modify':
+            _id = request.values.get('id')
+            user_name = request.values.get('username')
+            if not _id or not user_name:
+                return json.dumps({'code': 500, 'msg': '参数错误'})
+            user = User.query.get(_id)
+            if not user:
+                return json.dumps({'code': 500, 'msg': '网络异常，请稍候重试'})
+            user.username = user_name
+            db.session.commit()
+            if current_user.id == user.id:
+                logout_user()
+            return json.dumps({'code': 200, 'msg': '修改成功'})
+        elif o_type == 'destroy':
+            _id = request.values.get('id')
+            if not _id:
+                return json.dumps({'code': 500, 'msg': '参数错误'})
+            user = User.query.get(_id)
+            user.is_alive = False
+            db.session.commit()
+            if current_user.id == user.id:
+                logout_user()
+            return json.dumps({'code': 200, 'msg': '删除账号成功'})
+        elif o_type == 'online':
+            _id = request.values.get('id')
+            if not _id:
+                return json.dumps({'code': 500, 'msg': '参数错误'})
+            user = User.query.get(_id)
+            user.is_alive = True
+            db.session.commit()
+            return json.dumps({'code': 200, 'msg': '恢复账号成功'})
+        elif o_type == 'add':
+            user_name = request.values.get('username')
+            password = request.values.get('password')
+            is_super = request.values.get('is_super', '0')
+            if not user_name or not password or is_super not in ('0', '1'):
+                return json.dumps({'code': 500, 'msg': '参数错误'})
+            user = User()
+            user.username = user_name
+            user.is_super = int(is_super)
+            user.set_password(password)
+            db.session.add(user)
+            db.session.commit()
+            return json.dumps({'code': 200, 'msg': '添加成功'})
     else:
-        abort(404)
-    return render_template('user_manage.html', user_type=user_type)
+        return render_template('user_manage.html')
 
 
 @view.route('/car_manage', methods=['GET', 'POST'])

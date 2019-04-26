@@ -21,7 +21,7 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Admin.query.get(user_id)
+    return User.query.get(user_id)
 
 
 # 注册蓝图
@@ -29,9 +29,9 @@ from view import view
 
 app.register_blueprint(view)
 
-from model.admin import Admin
-from model.car import Car
+from model.user import User
 from model.upload import Upload
+from model.car import Car, CarType, Classification
 
 if __name__ == '__main__':
     app.run(debug=True, port=8888)

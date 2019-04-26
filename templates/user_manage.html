@@ -44,14 +44,14 @@
 
 <script>
     layui.use('table', function () {
-        var table = layui.table;
+        var table = layui.table, form = layui.form;
 
         var tableIns = table.render({
             elem: '#user_table',
             height: 600,
             limit: 10,
             limits: [5, 10, 20],
-            url: '{{ url_for('view.user_manage', user_type=user_type) }}',
+            url: '{{ url_for('view.user_manage') }}',
             method: 'post',
             where: {type: 'list'},
             loading: true,
@@ -60,7 +60,8 @@
             },
             parseData: function (res) {
                 res.data.forEach(function (v, i, a) {
-                    v.is_alive = v.is_alive ? '正常' : '已删'
+                    v.is_alive = v.is_alive ? '正常' : '已删';
+                    v.is_super = v.is_super ? '超管' : '普通用户'
                 });
             },
             page: true,
@@ -71,6 +72,7 @@
                     {field: 'id', title: 'ID', sort: true, fixed: 'left', align: 'center'},
                     {field: 'username', title: '用户名', align: 'center'},
                     {field: 'is_alive', title: '是否有效', align: 'center'},
+                    {field: 'is_super', title: '是否超管', align: 'center'},
                     {field: 'last_login_time', title: '最后登录时间', align: 'center'},
                     {field: '操作', title: '操作', toolbar: '#barDemo'}
                 ]
@@ -116,21 +118,34 @@
                             '                </div>\n' +
                             '            </div>\n' +
                             '        </div>\n' +
+                            '        <div class="layui-form-item">\n' +
+                            '            <div class="layui-inline">\n' +
+                            '                <label class="layui-form-label">密码</label>\n' +
+                            '                <div class="layui-input-inline">\n' +
+                            '                    <input type="radio" name="is_super" value="1" title="超管">\n' +
+                            '                    <input type="radio" name="is_super" value="0" title="普通用户" checked>\n' +
+                            '                </div>\n' +
+                            '            </div>\n' +
+                            '        </div>\n' +
                             '    </form>'
                         , btn: ['确定', '取消']
                         , btnAlign: 'c' //按钮居中
                         , shade: 0 //不显示遮罩
+                        , success: function () {
+                            form.render('radio');
+                        }
                         , yes: function (index, layero) {
                             var data = {
                                 username: $(layero[0]).find('input[name="username"]').val(),
                                 password: $(layero[0]).find('input[name="password"]').val(),
+                                is_super: $(layero[0]).find('input[name="is_super"]:checked').val(),
                                 type: 'add'
                             };
                             if (!data.username || !data.password) {
                                 layer.msg('请填写用户名和密码后再提交', {icon: 5, time: 3000});
                                 return
                             }
-                            $.post("{{ url_for('view.user_manage', user_type=user_type) }}", data, function (res) {
+                            $.post("{{ url_for('view.user_manage') }}", data, function (res) {
                                 if (res.code === 200) {
                                     layer.msg(res.msg, {icon: 1, time: 1000}, function () {
                                         tableIns.reload({
@@ -168,7 +183,7 @@
                     title: '提示',
                     icon: 7,
                 }, function () {
-                    $.post("{{ url_for('view.user_manage', user_type=user_type) }}", {id: data.id, type: 'destroy'}, function (res) {
+                    $.post("{{ url_for('view.user_manage') }}", {id: data.id, type: 'destroy'}, function (res) {
                         if (res.code === 200) {
                             layer.msg(res.msg, {icon: 1, time: 1000}, function () {
                                 tableIns.reload({
@@ -214,7 +229,7 @@
                             layer.msg('请填写用户名后再提交', {icon: 5, time: 3000});
                             return
                         }
-                        $.post("{{ url_for('view.user_manage', user_type=user_type) }}", data, function (res) {
+                        $.post("{{ url_for('view.user_manage') }}", data, function (res) {
                             if (res.code === 200) {
                                 layer.msg(res.msg, {icon: 1, time: 1000}, function () {
                                     tableIns.reload({
@@ -244,7 +259,7 @@
                     title: '提示',
                     icon: 7
                 }, function () {
-                    $.post("{{ url_for('view.user_manage', user_type=user_type) }}", {id: data.id, type: 'online'}, function (res) {
+                    $.post("{{ url_for('view.user_manage') }}", {id: data.id, type: 'online'}, function (res) {
                         if (res.code === 200) {
                             layer.msg(res.msg, {icon: 1, time: 1000}, function () {
                                 tableIns.reload({
@@ -293,7 +308,7 @@
                             layer.msg('请填写用户名和密码后再提交', {icon: 5, time: 3000});
                             return
                         }
-                        $.post("{{ url_for('view.user_manage', user_type=user_type) }}", data, function (res) {
+                        $.post("{{ url_for('view.user_manage') }}", data, function (res) {
                             if (res.code === 200) {
                                 layer.msg(res.msg, {icon: 1, time: 1000}, function () {
                                     tableIns.reload({
