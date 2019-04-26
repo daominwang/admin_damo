@@ -1,3 +1,10 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# @Time    : 2019/04/21 12:17
+# @Author  : xtmin
+# @Email   : wangdaomin123@hotmail.com
+# @File    : app.py
+# @Software: PyCharm
 from flask import Flask
 from config import Config
 from flask_migrate import Migrate
