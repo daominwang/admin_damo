@@ -10,11 +10,11 @@ import time
 from . import view
 from app import db
 from model.car import Car
+from sqlalchemy import or_
 from hashlib import sha224
-from model.admin import Admin
 from datetime import datetime
+from model.admin import Admin
 from model.upload import Upload
-from sqlalchemy import or_, case
 from flask_login import login_required
 from flask import request, render_template, abort, json, redirect
 
@@ -123,7 +123,11 @@ def car_manage():
 
             count = _car_list.count()
             _car_list = _car_list.order_by(
-                db.case(((Car.update_time, Car.update_time),), else_=Car.build_time).desc()
+                db.case(
+                    (
+                        (Car.update_time, Car.update_time),
+                    ), else_=Car.build_time
+                ).desc()
             ).paginate(int(page), int(limit)).items
             car_list = []
             for item in _car_list:
@@ -156,6 +160,7 @@ def car_manage():
 
 
 @view.route('/car_info', methods=['GET', 'POST'])
+@login_required
 def car_info():
     if request.method == 'GET':
         _id = request.values.get('id')
@@ -226,3 +231,78 @@ def upload():
             return json.dumps({'code': 200, 'msg': '', 'data': {'src': f'/static/uploads/{_date}/{f_name}', 'title': f_name}})
     except Exception as e:
         return json.dumps({'code': 500, 'msg': '网络异常，请稍候重试'})
+
+
+@view.route('/api/car/search', methods=['POST'])
+def search():
+    car_type = request.values.get('t')
+    classification = request.values.get('c')
+    min_day_rent = request.values.get('min')
+    max_day_rent = request.values.get('max')
+    page = request.values.get('p', '1')
+    page_limit = request.values.get('limit', '12')
+    _car_list = Car.query.filter_by(status=True)
+    if car_type:
+        _car_list.filter_by(car_type=car_type)
+    if classification:
+        _car_list.filter_by(classification=classification)
+    if min_day_rent:
+        _car_list.filter_by(
+            or_(
+                Car.day_rent_actual > int(min_day_rent),
+                not Car.day_rent_actual
+            )
+        )
+    if max_day_rent:
+        _car_list.filter_by(
+            or_(
+                Car.day_rent_actual < int(max_day_rent),
+                not Car.day_rent_actual
+            )
+        )
+    count = _car_list.count()
+    car_list = _car_list.paginate(int(page), int(page_limit)).items
+    return_data = []
+    for _ in car_list:
+        return_data.append({
+            'id': _.id,
+            'img': _.img,
+            'type': _.car_type,
+            'title': _.car_title,
+            'city': _.city,
+            'rent': _.day_rent_actual if _.day_rent_actual else '面议'
+        })
+    return json.dumps({'code': 200, 'data': return_data, 'total': count})
+
+
+@view.route('/api/car/detail', methods=['POST'])
+def car_detail():
+    _id = request.values.get('id')
+    if not _id:
+        return json.dumps({'code': 500, 'msg': '参数错误'})
+    _car_detail = Car.query.get(_id)
+    if not _car_detail:
+        return json.dumps({'code': 500, 'msg': '查无此车辆信息'})
+    return_data = {
+        'id': _car_detail.id,
+        'img': _car_detail.img,
+        'car_type': _car_detail.car_type,
+        'car_title': _car_detail.car_title,
+        'classification': _car_detail.classification,
+        'city': _car_detail.city,
+        'car_desc': _car_detail.car_desc,
+        'car_left': _car_detail.car_left,
+        'day_rent_original': _car_detail.day_rent_original or '面议',
+        'day_rent_actual': _car_detail.day_rent_actual or '面议',
+        'deposit_original': _car_detail.deposit_original or '面议',
+        'deposit_actual': _car_detail.deposit_actual or '面议',
+        'mileage_limit_per_day_original': _car_detail.mileage_limit_per_day_original or '面议',
+        'mileage_limit_per_day_actual': _car_detail.mileage_limit_per_day_actual or '面议',
+        'ext_mileage_pay_original': _car_detail.ext_mileage_pay_original or '面议',
+        'ext_mileage_pay_actual': _car_detail.ext_mileage_pay_actual or '面议',
+        'ext_time_pay_original': _car_detail.ext_time_pay_original or '面议',
+        'ext_time_pay_actual': _car_detail.ext_time_pay_actual or '面议',
+        'month_rent_original': _car_detail.month_rent_original or '面议',
+        'month_rent_actual': _car_detail.month_rent_actual or '面议'
+    }
+    return json.dumps({'code': 200, 'data': return_data})
