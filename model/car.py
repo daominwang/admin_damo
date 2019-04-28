@@ -10,6 +10,8 @@ from datetime import datetime
 
 
 class Car(db.Model):
+    __tablename__ = 'car'
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     img = db.Column(db.String(64))
     car_type = db.Column(db.String(64))
@@ -30,22 +32,29 @@ class Car(db.Model):
     ext_time_pay_actual = db.Column(db.Integer, default=0)
     month_rent_original = db.Column(db.Integer, default=0)
     month_rent_actual = db.Column(db.Integer, default=0)
+    create_user = db.Column(db.Integer, db.ForeignKey('user.id'))
     build_time = db.Column(db.DateTime, default=datetime.now)
     update_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     status = db.Column(db.Boolean, nullable=True, default=True)
 
 
 class CarType(db.Model):
+    __tablename__ = 'car_type'
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     car_type = db.Column(db.String(64))
+    create_user = db.Column(db.Integer, db.ForeignKey('user.id'))
     build_time = db.Column(db.DateTime, default=datetime.now)
     update_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     status = db.Column(db.Boolean, nullable=True, default=True)
 
 
 class Classification(db.Model):
+    __tablename__ = 'classification'
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     classification = db.Column(db.String(64))
+    create_user = db.Column(db.Integer, db.ForeignKey('user.id'))
     build_time = db.Column(db.DateTime, default=datetime.now)
     update_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     status = db.Column(db.Boolean, nullable=True, default=True)

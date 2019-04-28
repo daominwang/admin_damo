@@ -14,6 +14,11 @@
         #layerDemoauto {
             margin-top: 20px;
         }
+
+        label:before {
+            color: red;
+            content: "*";
+        }
     </style>
 {% endblock %}
 
@@ -37,7 +42,9 @@
     <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="online">恢复</a>
     {{ " {{#  }else{ }} " }}
     <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="reset_pwd">重置密码</a>
+    {{ " {{#  if(!d.is_current){ }} " }}
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    {{ " {{#  } }} " }}
     {{ " {{#  } }} " }}
     {% endautoescape %}
 </script>
@@ -61,7 +68,8 @@
             parseData: function (res) {
                 res.data.forEach(function (v, i, a) {
                     v.is_alive = v.is_alive ? '正常' : '已删';
-                    v.is_super = v.is_super ? '超管' : '普通用户'
+                    v.is_super = v.is_super ? '超管' : '普通用户';
+                    v.is_current = v.id === {{ current_user.id }};
                 });
             },
             page: true,

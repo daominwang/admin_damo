@@ -1,0 +1,173 @@
+{% extends 'index.html' %}
+
+{% block content_css %}
+    <style>
+        div[lay-id=car_table] {
+            margin: 0 15px;
+        }
+
+        input[name=key_word] {
+            display: inline-block;
+            width: 150px;
+        }
+
+        #layerDemoauto {
+            margin-top: 20px;
+        }
+
+        .layui-form-pane .layui-form-label {
+            width: 160px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <table id="car_table" lay-filter="car_table"></table>
+{% endblock %}
+
+{% block content_javascript %}
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-row">
+        <input class="layui-input" style="height: 30px;" placeholder="关键字" name="key_word">
+        <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="search" lay-event="search"><i class="layui-icon">&#xe615;</i>搜索</button>
+        <a class="layui-btn layui-btn-sm" lay-event="add"><i class="layui-icon"></i>添加</a>
+    </div>
+</script>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    {% autoescape false %}
+    {{ " {{#  if(d.status === '已删'){ }} " }}
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="online">恢复</a>
+    {{ " {{#  }else{ }} " }}
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    {{ " {{#  } }} " }}
+    {% endautoescape %}
+</script>
+
+<script>
+    layui.use('table', function () {
+        var table = layui.table;
+
+        var tableIns = table.render({
+            elem: '#car_table',
+            height: 600,
+            limit: 10,
+            limits: [5, 10, 20],
+            url: '{{ url_for('view.car_manage') }}',
+            method: 'post',
+            where: {type: 'list'},
+            loading: true,
+            response: {
+                statusCode: 200
+            },
+            parseData: function (res) {
+                res.data.forEach(function (v, i, a) {
+                    v.status = v.status ? '正常' : '已删'
+                });
+            },
+            page: true,
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter'],
+            cols: [
+                [
+                    {field: 'id', title: 'ID', sort: true, fixed: 'left', align: 'center'},
+                    {field: 'car_type', title: '车型', align: 'center'},
+                    {field: 'car_title', title: '标题', align: 'center'},
+                    {field: 'classification', title: '类型', align: 'center'},
+                    {field: 'city', title: '城市', align: 'center'},
+                    {field: 'car_left', title: '库存', align: 'center'},
+                    {field: 'status', title: '状态', align: 'center'},
+                    {field: '操作', title: '操作', toolbar: '#barDemo', minWidth: 200}
+                ]
+            ],
+            id: 'car_table'
+        });
+
+        table.on('toolbar(car_table)', function (obj) {
+            var key_word = $('input[name="key_word"]').val();
+            switch (obj.event) {
+                case 'search':
+                    tableIns.reload({
+                        where: {
+                            type: 'list',
+                            key_word: key_word
+                        }
+                        , page: {
+                            curr: 1 //重新从第 1 页开始
+                        }, done: function () {
+                            $('input[name="key_word"]').val(key_word)
+                        }
+                    });
+                    break;
+                case 'add':
+                    window.location.href = "{{ url_for('view.car_info') }}?id=";
+                    break;
+            }
+        });
+
+        //监听行工具事件
+        table.on('tool(car_table)', function (obj) {
+            var data = obj.data,
+                key_word = $('input[name="key_word"]').val();
+            if (obj.event === 'del') {
+                layer.confirm('确认下线该车辆信息吗？', {
+                    btn: ['确认', '取消'],
+                    title: '提示',
+                    icon: 7,
+                }, function () {
+                    $.post("{{ url_for('view.car_manage') }}", {id: data.id, type: 'destroy'}, function (res) {
+                        if (res.code === 200) {
+                            layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                                tableIns.reload({
+                                    where: {
+                                        type: 'list'
+                                    }
+                                    , page: {
+                                        curr: 1 //重新从第 1 页开始
+                                    }, done: function () {
+                                        $('input[name="key_word"]').val(key_word)
+                                    }
+                                })
+                            });
+                        } else {
+                            layer.msg(res.msg, {icon: 5, time: 3000})
+                        }
+                    }, 'json')
+                }, function () {
+                    layer.closeAll()
+                });
+            } else if (obj.event === 'edit') {
+                window.location.href = "{{ url_for('view.car_info') }}?id=" + data.id
+            } else if (obj.event === 'online') {
+                layer.confirm('确认恢复该车辆信息吗？', {
+                    btn: ['确认', '取消'],
+                    title: '提示',
+                    icon: 7
+                }, function () {
+                    $.post("{{ url_for('view.car_manage') }}", {id: data.id, type: 'online'}, function (res) {
+                        if (res.code === 200) {
+                            layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                                tableIns.reload({
+                                    where: {
+                                        type: 'list'
+                                    }
+                                    , page: {
+                                        curr: 1 //重新从第 1 页开始
+                                    }, done: function () {
+                                        $('input[name="key_word"]').val(key_word)
+                                    }
+                                })
+                            });
+                        } else {
+                            layer.msg(res.msg, {icon: 5, time: 3000})
+                        }
+                    }, 'json')
+                }, function () {
+                    layer.closeAll()
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -50,7 +50,7 @@
                             </dd>
                         </dl>
                     </li>
-                    <li class="layui-nav-item {{ 'layui-nav-itemed' if request.path.startswith('/car_manage') or request.path.startswith('/car_info') else '' }}">
+                    <li class="layui-nav-item {{ 'layui-nav-itemed' if request.path.startswith('/car_manage') or request.path.startswith('/car_info') or request.path.startswith('/car_type_manage') or request.path.startswith('/classification_manage') else '' }}">
                         <a class="javascript:;" href="javascript:;">
                             <i class="layui-icon" style="top: 3px;">&#xe63c;</i><cite>车辆管理</cite>
                         </a>
@@ -58,6 +58,20 @@
                             <dd class="{{ 'layui-this' if request.path == url_for('view.car_manage') or request.path.startswith('/car_info') else '' }}">
                                 <a href="{{ url_for('view.car_manage') }}">
                                     <cite>车辆管理</cite>
+                                </a>
+                            </dd>
+                        </dl>
+                        <dl class="layui-nav-child">
+                            <dd class="{{ 'layui-this' if request.path == url_for('view.car_type_manage') or request.path.startswith('/car_type_manage') else '' }}">
+                                <a href="{{ url_for('view.car_type_manage') }}">
+                                    <cite>车型管理</cite>
+                                </a>
+                            </dd>
+                        </dl>
+                        <dl class="layui-nav-child">
+                            <dd class="{{ 'layui-this' if request.path == url_for('view.classification_manage') or request.path.startswith('/classification_manage') else '' }}">
+                                <a href="{{ url_for('view.classification_manage') }}">
+                                    <cite>类型管理</cite>
                                 </a>
                             </dd>
                         </dl>

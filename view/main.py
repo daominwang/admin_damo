@@ -3,7 +3,7 @@
 # @Time    : 2019/04/21 12:19
 # @Author  : xtmin
 # @Email   : wangdaomin123@hotmail.com
-# @File    : main.py 
+# @File    : main.py
 # @Software: PyCharm
 import os
 import time
@@ -160,6 +160,18 @@ def car_manage():
             car.status = False
             db.session.commit()
             return json.dumps({'code': 200, 'msg': '下线车辆信息成功'})
+
+
+@view.route('/car_type_manage', methods=['GET', 'POST'])
+@login_required
+def car_type_manage():
+    return render_template('car_type_manage.html')
+
+
+@view.route('/classification_manage', methods=['GET', 'POST'])
+@login_required
+def classification_manage():
+    return render_template('classification_manage.html')
 
 
 @view.route('/car_info', methods=['GET', 'POST'])
