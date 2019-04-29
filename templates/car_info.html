@@ -50,29 +50,9 @@
                     <label class="layui-form-label">车型</label>
                     <div class="layui-input-inline">
                         <select name="car_type">
-                            <option value="奥迪" {{ 'selected' if car.car_type and '奥迪' in car.car_type else '' }}>A-奥迪</option>
-                            <option value="奔驰" {{ 'selected' if car.car_type and '奔驰' in car.car_type else '' }}>B-奔驰</option>
-                            <option value="别克" {{ 'selected' if car.car_type and '别克' in car.car_type else '' }}>B-别克</option>
-                            <option value="保时捷" {{ 'selected' if car.car_type and '保时捷' in car.car_type else '' }}>B-保时捷</option>
-                            <option value="宾利" {{ 'selected' if car.car_type and '宾利' in car.car_type else '' }}>B-宾利</option>
-                            <option value="宝马" {{ 'selected' if car.car_type and '宝马' in car.car_type else '' }}>C-宝马</option>
-                            <option value="长安" {{ 'selected' if car.car_type and '长安' in car.car_type else '' }}>C-长安</option>
-                            <option value="大众" {{ 'selected' if car.car_type and '大众' in car.car_type else '' }}>D-大众</option>
-                            <option value="东本" {{ 'selected' if car.car_type and '东本' in car.car_type else '' }}>D-东本</option>
-                            <option value="丰田" {{ 'selected' if car.car_type and '丰田' in car.car_type else '' }}>F-丰田</option>
-                            <option value="广本" {{ 'selected' if car.car_type and '广本' in car.car_type else '' }}>G-广本</option>
-                            <option value="华晨" {{ 'selected' if car.car_type and '华晨' in car.car_type else '' }}>H-华晨</option>
-                            <option value="Jeep" {{ 'selected' if car.car_type and 'Jeep' in car.car_type else '' }}>J-Jeep</option>
-                            <option value="江淮" {{ 'selected' if car.car_type and '江淮' in car.car_type else '' }}>J-江淮</option>
-                            <option value="金龙" {{ 'selected' if car.car_type and '金龙' in car.car_type else '' }}>J-金龙</option>
-                            <option value="考斯特" {{ 'selected' if car.car_type and '考斯特' in car.car_type else '' }}>K-考斯特</option>
-                            <option value="马自达" {{ 'selected' if car.car_type and '马自达' in car.car_type else '' }}>M-马自达</option>
-                            <option value="全顺" {{ 'selected' if car.car_type and '全顺' in car.car_type else '' }}>Q-全顺</option>
-                            <option value="现代" {{ 'selected' if car.car_type and '现代' in car.car_type else '' }}>X-现代</option>
-                            <option value="雪铁龙" {{ 'selected' if car.car_type and '雪铁龙' in car.car_type else '' }}>X-雪铁龙</option>
-                            <option value="依维柯" {{ 'selected' if car.car_type and '依维柯' in car.car_type else '' }}>Y-依维柯</option>
-                            <option value="三菱" {{ 'selected' if car.car_type and '三菱' in car.car_type else '' }}>S-三菱</option>
-                            <option value="尼桑" {{ 'selected' if car.car_type and '尼桑' in car.car_type else '' }}>S-尼桑</option>
+                            {% for item in car_type_list %}
+                                <option value="{{ item.car_type }}" {{ 'selected' if car.car_type and item.car_type == car.car_type else '' }}>{{ item.car_type }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                 </div>
@@ -90,12 +70,9 @@
                     <label class="layui-form-label">类型</label>
                     <div class="layui-input-inline">
                         <select name="classification">
-                            <option value="越野车" {{ 'selected' if car.classification and '越野车' in car.classification else '' }}>越野车</option>
-                            <option value="轿车" {{ 'selected' if car.classification and '轿车' in car.classification else '' }}>轿车</option>
-                            <option value="商务车" {{ 'selected' if car.classification and '商务车' in car.classification else '' }}>商务车</option>
-                            <option value="跑车" {{ 'selected' if car.classification and '跑车' in car.classification else '' }}>跑车</option>
-                            <option value="大客车" {{ 'selected' if car.classification and '大客车' in car.classification else '' }}>大客车</option>
-                            <option value="婚庆租车" {{ 'selected' if car.classification and '婚庆租车' in car.classification else '' }}>婚庆租车</option>
+                            {% for item in classification_list %}
+                                <option value="{{ item.classification }}" {{ 'selected' if car.classification and item.classification == car.classification else '' }}>{{ item.classification }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                 </div>

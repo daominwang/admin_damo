@@ -9,11 +9,11 @@ import os
 
 
 class Config(object):
-    SECRET_KEY = 'secret'
+    SECRET_KEY = 'UNj^SlGYg24eWb&MoVQ*D34a7#zI6EWD'
     basedir = os.path.abspath(os.path.dirname(__file__))
 
     USERNAME = 'car'
-    PASSWORD = 'twNX2Ydm'
+    PASSWORD = 'ZXU7CI@WZht3RqVq'
     HOST = '127.0.0.1'
     PORT = '3306'
     DATABASE = 'car_rent'

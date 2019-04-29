@@ -55,7 +55,7 @@
 
         var tableIns = table.render({
             elem: '#user_table',
-            height: 600,
+            height: 'full-100',
             limit: 10,
             limits: [5, 10, 20],
             url: '{{ url_for('view.user_manage') }}',
@@ -213,54 +213,37 @@
                     layer.closeAll()
                 });
             } else if (obj.event === 'edit') {
-                layer.open({
-                    type: 1
-                    , offset: 'auto'
-                    , id: 'layerDemoauto'
-                    , content: '    <form class="layui-form" action="">\n' +
-                        '        <div class="layui-form-item">\n' +
-                        '            <div class="layui-inline">\n' +
-                        '                <label class="layui-form-label">用户名</label>\n' +
-                        '                <div class="layui-input-inline">\n' +
-                        '                    <input type="text" name="username" lay-verify="required" autocomplete="off" placeholder="请输入用户名" class="layui-input" value="' + data.username + '">\n' +
-                        '                </div>\n' +
-                        '            </div>\n' +
-                        '        </div>\n' +
-                        '    </form>'
-                    , btn: ['确定', '取消']
-                    , btnAlign: 'c' //按钮居中
-                    , shade: 0 //不显示遮罩
-                    , yes: function (index, layero) {
-                        data.username = $(layero[0]).find('input[name="username"]').val();
-                        data.type = 'modify';
-                        if (!data.username) {
-                            layer.msg('请填写用户名后再提交', {icon: 5, time: 3000});
-                            return
+                layer.prompt({
+                    formType: 0,
+                    title: '用户名',
+                    value: obj.data.username
+                }, function (value, index, elem) {
+                    if (!value.trim()) {
+                        layer.msg('请填写用户名后再提交', {icon: 5, time: 3000, shade: [0.8, '#393D49'], shadeClose: true});
+                        return
+                    }
+                    data.username = value.trim();
+                    data.type = 'modify';
+                    $.post("{{ url_for('view.user_manage') }}", data, function (res) {
+                        if (res.code === 200) {
+                            layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                                tableIns.reload({
+                                    where: {
+                                        type: 'list'
+                                    }
+                                    , page: {
+                                        curr: 1 //重新从第 1 页开始
+                                    }, done: function () {
+                                        $('input[name="key_word"]').val(key_word)
+                                    }
+                                })
+                            });
+                        } else {
+                            layer.msg(res.msg, {icon: 5, time: 3000})
                         }
-                        $.post("{{ url_for('view.user_manage') }}", data, function (res) {
-                            if (res.code === 200) {
-                                layer.msg(res.msg, {icon: 1, time: 1000}, function () {
-                                    tableIns.reload({
-                                        where: {
-                                            type: 'list'
-                                        }
-                                        , page: {
-                                            curr: 1 //重新从第 1 页开始
-                                        }, done: function () {
-                                            $('input[name="key_word"]').val(key_word)
-                                        }
-                                    })
-                                });
-                            } else {
-                                layer.msg(res.msg, {icon: 5, time: 3000})
-                            }
-                        }, 'json');
-                        layer.closeAll();
-                    }
-                    , btn2: function () {
-                        layer.closeAll();
-                    }
-                })
+                    }, 'json');
+                    layer.close(index);
+                });
             } else if (obj.event === 'online') {
                 layer.confirm('确认恢复该账号吗？', {
                     btn: ['确认', '取消'],

@@ -51,7 +51,7 @@
 
         var tableIns = table.render({
             elem: '#car_table',
-            height: 600,
+            height: 'full-100',
             limit: 10,
             limits: [5, 10, 20],
             url: '{{ url_for('view.car_manage') }}',
@@ -63,7 +63,7 @@
             },
             parseData: function (res) {
                 res.data.forEach(function (v, i, a) {
-                    v.status = v.status ? '正常' : '已删'
+                    v.status = v.status ? '正常' : '已删';
                 });
             },
             page: true,
@@ -77,6 +77,7 @@
                     {field: 'classification', title: '类型', align: 'center'},
                     {field: 'city', title: '城市', align: 'center'},
                     {field: 'car_left', title: '库存', align: 'center'},
+                    {field: 'create_user', title: '创建人', align: 'center'},
                     {field: 'status', title: '状态', align: 'center'},
                     {field: '操作', title: '操作', toolbar: '#barDemo', minWidth: 200}
                 ]

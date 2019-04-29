@@ -9,12 +9,12 @@ import os
 import time
 from . import view
 from app import db
-from model.car import Car
 from sqlalchemy import or_
 from hashlib import sha224
 from datetime import datetime
 from model.user import User
 from model.upload import Upload
+from model.car import Car, CarType, Classification
 from flask_login import login_required, current_user, logout_user
 from flask import request, render_template, abort, json, redirect
 
@@ -141,6 +141,7 @@ def car_manage():
                     'classification': item.classification,
                     'city': item.city,
                     'car_left': item.car_left,
+                    'create_user': User.query.get(item.create_user).username,
                     'status': item.status
                 })
             return json.dumps({'code': 200, 'data': car_list, 'count': count})
@@ -165,13 +166,139 @@ def car_manage():
 @view.route('/car_type_manage', methods=['GET', 'POST'])
 @login_required
 def car_type_manage():
-    return render_template('car_type_manage.html')
+    if request.method == 'GET':
+        return render_template('car_type_manage.html')
+    else:
+        o_type = request.values.get('type')
+        if o_type == 'list':
+            key_word = request.values.get('key_word')
+            page = request.values.get('page', 1)
+            limit = request.values.get('limit', 10)
+            if key_word:
+                _type_list = CarType.query.filter(
+                    CarType.car_type.like(f'%{key_word}%'),
+                )
+            else:
+                _type_list = CarType.query
+
+            count = _type_list.count()
+            _type_list = _type_list.order_by(
+                db.case(
+                    (
+                        (CarType.update_time, CarType.update_time),
+                    ), else_=CarType.build_time
+                ).desc()
+            ).paginate(int(page), int(limit)).items
+            type_list = []
+            for item in _type_list:
+                type_list.append({
+                    'id': item.id,
+                    'car_type': item.car_type,
+                    'create_user': User.query.get(item.create_user).username,
+                    'status': item.status
+                })
+            return json.dumps({'code': 200, 'data': type_list, 'count': count})
+        elif o_type == 'add':
+            car_type = request.values.get('car_type')
+            db.session.add(CarType(car_type=car_type, create_user=current_user.id))
+            db.session.commit()
+            return json.dumps({'code': 200, 'msg': '添加成功'})
+        elif o_type == 'modify':
+            _id = request.values.get('id')
+            _car_type = request.values.get('car_type')
+            if not _id or not _car_type:
+                return json.dumps({'code': 500, 'msg': '参数错误'})
+            car_type = CarType.query.get(_id)
+            Car.query.filter_by(car_type=car_type.car_type).update({'car_type': _car_type})
+            car_type.car_type = _car_type
+            db.session.commit()
+            return json.dumps({'code': 200, 'msg': '修改成功'})
+        elif o_type == 'destroy':
+            _id = request.values.get('id')
+            if not _id:
+                return json.dumps({'code': 500, 'msg': '参数错误'})
+            car_type = CarType.query.get(_id)
+            Car.query.filter_by(car_type=car_type.car_type).update({'status': False})
+            car_type.status = False
+            db.session.commit()
+            return json.dumps({'code': 200, 'msg': '停用成功'})
+        elif o_type == 'online':
+            _id = request.values.get('id')
+            if not _id:
+                return json.dumps({'code': 500, 'msg': '参数错误'})
+            car_type = CarType.query.get(_id)
+            car_type.status = True
+            db.session.commit()
+            return json.dumps({'code': 200, 'msg': '启用成功'})
 
 
 @view.route('/classification_manage', methods=['GET', 'POST'])
 @login_required
 def classification_manage():
-    return render_template('classification_manage.html')
+    if request.method == 'GET':
+        return render_template('classification_manage.html')
+    else:
+        o_type = request.values.get('type')
+        if o_type == 'list':
+            key_word = request.values.get('key_word')
+            page = request.values.get('page', 1)
+            limit = request.values.get('limit', 10)
+            if key_word:
+                _classification_list = Classification.query.filter(
+                    Classification.classification.like(f'%{key_word}%'),
+                )
+            else:
+                _classification_list = Classification.query
+
+            count = _classification_list.count()
+            _classification_list = _classification_list.order_by(
+                db.case(
+                    (
+                        (Classification.update_time, Classification.update_time),
+                    ), else_=Classification.build_time
+                ).desc()
+            ).paginate(int(page), int(limit)).items
+            classification_list = []
+            for item in _classification_list:
+                classification_list.append({
+                    'id': item.id,
+                    'classification': item.classification,
+                    'create_user': User.query.get(item.create_user).username,
+                    'status': item.status
+                })
+            return json.dumps({'code': 200, 'data': classification_list, 'count': count})
+        elif o_type == 'add':
+            classification = request.values.get('classification')
+            db.session.add(Classification(classification=classification, create_user=current_user.id))
+            db.session.commit()
+            return json.dumps({'code': 200, 'msg': '添加成功'})
+        elif o_type == 'modify':
+            _id = request.values.get('id')
+            _classification = request.values.get('classification')
+            if not _id or not _classification:
+                return json.dumps({'code': 500, 'msg': '参数错误'})
+            classification = Classification.query.get(_id)
+            Car.query.filter_by(classification=classification.classification).update({'classification': _classification})
+            classification.classification = _classification
+            db.session.commit()
+            return json.dumps({'code': 200, 'msg': '修改成功'})
+        elif o_type == 'destroy':
+            _id = request.values.get('id')
+            if not _id:
+                return json.dumps({'code': 500, 'msg': '参数错误'})
+            classification = Classification.query.get(_id)
+            Car.query.filter_by(classification=classification.classification).update({'status': False})
+            classification.status = False
+            db.session.commit()
+            return json.dumps({'code': 200, 'msg': '停用成功'})
+        elif o_type == 'online':
+            _id = request.values.get('id')
+            if not _id:
+                return json.dumps({'code': 500, 'msg': '参数错误'})
+            classification = Classification.query.get(_id)
+            classification.status = True
+            db.session.commit()
+            return json.dumps({'code': 200, 'msg': '启用成功'})
 
 
 @view.route('/car_info', methods=['GET', 'POST'])
@@ -179,13 +306,15 @@ def classification_manage():
 def car_info():
     if request.method == 'GET':
         _id = request.values.get('id')
+        classification_list = Classification.query.filter_by(status=True).all()
+        car_type_list = CarType.query.filter_by(status=True).all()
         if _id:
             car = Car.query.get(_id)
             if not car:
                 abort(404)
-            return render_template('car_info.html', car=car)
+            return render_template('car_info.html', car=car, classification_list=classification_list, car_type_list=car_type_list)
         else:
-            return render_template('car_info.html', car=Car())
+            return render_template('car_info.html', car=Car(), classification_list=classification_list, car_type_list=car_type_list)
     else:
         _args = request.values.to_dict()
         _id = _args.get('id')

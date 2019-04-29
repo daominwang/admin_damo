@@ -7,12 +7,17 @@
 # @Software: PyCharm
 import json
 from . import view
-from app import db
 from flask import json
 from model.user import User
+from app import login_manager
 from model.form import LoginForm
 from flask import request, render_template, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user
+
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    return redirect(url_for('view.login'))
 
 
 @view.route('/login', methods=['GET', 'POST'])

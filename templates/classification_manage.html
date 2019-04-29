@@ -22,7 +22,7 @@
 {% endblock %}
 
 {% block content %}
-    <table id="car_table" lay-filter="car_table"></table>
+    <table id="classification_table" lay-filter="classification_table"></table>
 {% endblock %}
 
 {% block content_javascript %}
@@ -50,11 +50,11 @@
         var table = layui.table;
 
         var tableIns = table.render({
-            elem: '#car_table',
-            height: 600,
+            elem: '#classification_table',
+            height: 'full-100',
             limit: 10,
             limits: [5, 10, 20],
-            url: '{{ url_for('view.car_manage') }}',
+            url: '{{ url_for('view.classification_manage') }}',
             method: 'post',
             where: {type: 'list'},
             loading: true,
@@ -72,19 +72,16 @@
             cols: [
                 [
                     {field: 'id', title: 'ID', sort: true, fixed: 'left', align: 'center'},
-                    {field: 'car_type', title: '车型', align: 'center'},
-                    {field: 'car_title', title: '标题', align: 'center'},
-                    {field: 'classification', title: '类型', align: 'center'},
-                    {field: 'city', title: '城市', align: 'center'},
-                    {field: 'car_left', title: '库存', align: 'center'},
+                    {field: 'classification', title: '车辆类型', align: 'center'},
+                    {field: 'create_user', title: '创建人', align: 'center'},
                     {field: 'status', title: '状态', align: 'center'},
                     {field: '操作', title: '操作', toolbar: '#barDemo', minWidth: 200}
                 ]
             ],
-            id: 'car_table'
+            id: 'classification_table'
         });
 
-        table.on('toolbar(car_table)', function (obj) {
+        table.on('toolbar(classification_table)', function (obj) {
             var key_word = $('input[name="key_word"]').val();
             switch (obj.event) {
                 case 'search':
@@ -101,22 +98,52 @@
                     });
                     break;
                 case 'add':
-                    window.location.href = "{{ url_for('view.car_info') }}?id=";
-                    break;
+                    layer.prompt({
+                        formType: 0,
+                        title: '车辆类型',
+                    }, function (value, index, elem) {
+                        if (!value.trim()) {
+                            layer.msg('请填写车辆类型后再提交', {icon: 5, time: 3000, shade: [0.8, '#393D49'], shadeClose: true});
+                            return
+                        }
+                        var data = {
+                            classification: value.trim(),
+                            type: 'add'
+                        };
+                        $.post("{{ url_for('view.classification_manage') }}", data, function (res) {
+                            if (res.code === 200) {
+                                layer.msg(res.msg, {icon: 1, time: 1000, shade: [0.8, '#393D49'], shadeClose: true}, function () {
+                                    tableIns.reload({
+                                        where: {
+                                            type: 'list'
+                                        }
+                                        , page: {
+                                            curr: 1 //重新从第 1 页开始
+                                        }, done: function () {
+                                            $('input[name="key_word"]').val(key_word)
+                                        }
+                                    })
+                                });
+                            } else {
+                                layer.msg(res.msg, {icon: 5, time: 3000})
+                            }
+                        }, 'json');
+                        layer.close(index);
+                    });
             }
         });
 
         //监听行工具事件
-        table.on('tool(car_table)', function (obj) {
+        table.on('tool(classification_table)', function (obj) {
             var data = obj.data,
                 key_word = $('input[name="key_word"]').val();
             if (obj.event === 'del') {
-                layer.confirm('确认下线该车辆信息吗？', {
+                layer.confirm('确认停用该车辆类型吗？该车辆类型下的所有车辆都将被下线！', {
                     btn: ['确认', '取消'],
                     title: '提示',
                     icon: 7,
                 }, function () {
-                    $.post("{{ url_for('view.car_manage') }}", {id: data.id, type: 'destroy'}, function (res) {
+                    $.post("{{ url_for('view.classification_manage') }}", {id: data.id, type: 'destroy'}, function (res) {
                         if (res.code === 200) {
                             layer.msg(res.msg, {icon: 1, time: 1000}, function () {
                                 tableIns.reload({
@@ -138,14 +165,52 @@
                     layer.closeAll()
                 });
             } else if (obj.event === 'edit') {
-                window.location.href = "{{ url_for('view.car_info') }}?id=" + data.id
+                layer.prompt({
+                    formType: 0,
+                    title: '车辆类型',
+                    value: obj.data.classification
+                }, function (value, index, elem) {
+                    if (!value.trim()) {
+                        layer.msg('请填写车辆类型后再提交', {icon: 5, time: 3000, shade: [0.8, '#393D49'], shadeClose: true});
+                        return
+                    }
+                    layer.confirm('确认修改该车辆类型吗？该车辆类型下的所有车辆的车辆类型信息都会同时修改！', {
+                        btn: ['确认', '取消'],
+                        title: '提示',
+                        icon: 7,
+                    }, function () {
+                        data.classification = value.trim();
+                        data.type = 'modify';
+                        $.post("{{ url_for('view.classification_manage') }}", data, function (res) {
+                            if (res.code === 200) {
+                                layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                                    layer.closeAll();
+                                    tableIns.reload({
+                                        where: {
+                                            type: 'list'
+                                        }
+                                        , page: {
+                                            curr: 1 //重新从第 1 页开始
+                                        }, done: function () {
+                                            $('input[name="key_word"]').val(key_word)
+                                        }
+                                    })
+                                });
+                            } else {
+                                layer.msg(res.msg, {icon: 5, time: 3000})
+                            }
+                        }, 'json');
+                    }, function () {
+                        layer.closeAll();
+                    });
+                });
             } else if (obj.event === 'online') {
-                layer.confirm('确认恢复该车辆信息吗？', {
+                layer.confirm('确认启用该车辆类型吗？', {
                     btn: ['确认', '取消'],
                     title: '提示',
                     icon: 7
                 }, function () {
-                    $.post("{{ url_for('view.car_manage') }}", {id: data.id, type: 'online'}, function (res) {
+                    $.post("{{ url_for('view.classification_manage') }}", {id: data.id, type: 'online'}, function (res) {
                         if (res.code === 200) {
                             layer.msg(res.msg, {icon: 1, time: 1000}, function () {
                                 tableIns.reload({
