@@ -95,7 +95,7 @@
 
 {% block javascript %}
     <script src="{{ url_for('static',filename = 'js/x-admin.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static',filename = 'lib/wangEditor.min.js') }}"></script>
+    <script src="https://cdn.bootcss.com/wangEditor/10.0.13/wangEditor.min.js"></script>
     {% block content_javascript %}
     {% endblock %}
 {% endblock %}
