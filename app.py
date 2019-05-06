@@ -7,9 +7,13 @@
 # @Software: PyCharm
 from flask import Flask
 from config import Config
+from gevent import monkey
+from gevent import pywsgi
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+
+monkey.patch_socket()
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -34,4 +38,5 @@ from model.upload import Upload
 from model.car import Car, CarType, Classification
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8888)
+    server = pywsgi.WSGIServer(('127.0.0.1', 9524), app)
+    server.serve_forever()
