@@ -5,6 +5,7 @@
 # @Email   : wangdaomin123@hotmail.com
 # @File    : app.py
 # @Software: PyCharm
+import argparse
 from flask import Flask
 from config import Config
 from gevent import monkey
@@ -38,5 +39,9 @@ from model.upload import Upload
 from model.car import Car, CarType, Classification
 
 if __name__ == '__main__':
-    server = pywsgi.WSGIServer(('127.0.0.1', 9524), app)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-port', type=int, required=True, default=9524)
+    args = parser.parse_args()
+    port = args.port
+    server = pywsgi.WSGIServer(('127.0.0.1', port), app)
     server.serve_forever()
