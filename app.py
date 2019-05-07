@@ -6,13 +6,13 @@
 # @File    : app.py
 # @Software: PyCharm
 import argparse
-from flask import Flask
 from config import Config
 from gevent import monkey
 from gevent import pywsgi
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, redirect, url_for
 
 monkey.patch_socket()
 
@@ -27,6 +27,21 @@ login_manager.init_app(app)
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('500.html'), 500
+
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    return redirect(url_for('view.login'))
 
 
 # 注册蓝图

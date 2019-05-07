@@ -19,11 +19,6 @@ from flask_login import login_required, current_user, logout_user
 from flask import request, render_template, abort, json, redirect
 
 
-@view.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
-
-
 @view.route('/')
 def index():
     return redirect('/login')
