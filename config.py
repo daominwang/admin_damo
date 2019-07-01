@@ -25,3 +25,5 @@ class Config(object):
     SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_POOL_SIZE = 30
+    SQLALCHEMY_MAX_OVERFLOW = 20
